@@ -1,6 +1,8 @@
 import 'package:book/PageHome/PageHome.dart';
+import 'package:book/layout/list_book.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 
 
@@ -22,7 +24,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
-      home: Pagehome(),
+      home: kIsWeb ? const ListBook() : const Pagehome(),
+      //Web ==> Admin
+      //App ==>Shop
     );
   }
 }
