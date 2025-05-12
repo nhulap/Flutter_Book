@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../ChiTietSach/ChiTietSach.dart';
+import 'detail.dart';
 import '../Model/book.dart';
 
 // Hàm lấy danh sách sách từ Supabase
@@ -102,7 +102,7 @@ class _MenuState extends State<Menu> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => PageChiTietSach(book: book,),
+                            builder: (context) => Detail(book: book,),
                           ),
                         );
                       },

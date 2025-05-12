@@ -1,5 +1,5 @@
 import 'package:book/SignInSignUp/signup.dart';
-import 'package:book/PageHome/PageHome.dart';
+import 'package:book/PageHome/pagehome.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -31,7 +31,7 @@ class _SigninState extends State<Signin> {
 
       if (response.user != null) {
         Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (context) => const Pagehome())
+            MaterialPageRoute(builder: (context) => const PageHome())
         );
       }
     } catch (e) {

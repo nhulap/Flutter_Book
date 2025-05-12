@@ -1,4 +1,4 @@
-import 'package:book/PageHome/PageHome.dart';
+import 'package:book/PageHome/pagehome.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -31,7 +31,7 @@ class _SignupState extends State<Signup> {
 
       if (response.user != null) {
         Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (context) => Pagehome(),)
+            MaterialPageRoute(builder: (context) => PageHome(),)
         );
       }
     } catch (e) {

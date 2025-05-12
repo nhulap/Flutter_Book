@@ -16,16 +16,16 @@ Future<List<Book>> fetchBooksCungLoai(int loaiID, int bookID) async {
       .toList();
 }
 
-class PageChiTietSach extends StatefulWidget {
+class Detail extends StatefulWidget {
   final Book book;
 
-  const PageChiTietSach({super.key, required this.book});
+  const Detail({super.key, required this.book});
 
   @override
-  State<PageChiTietSach> createState() => _PageChiTietSachState();
+  State<Detail> createState() => _DetailState();
 }
 
-class _PageChiTietSachState extends State<PageChiTietSach> {
+class _DetailState extends State<Detail> {
   late Future<List<Book>> futureBooksCungLoai;
 
   @override
@@ -135,7 +135,7 @@ class _PageChiTietSachState extends State<PageChiTietSach> {
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => PageChiTietSach(book: b),
+                              builder: (context) => Detail(book: b),
                             ),
                           );
                         },

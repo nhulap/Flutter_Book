@@ -1,5 +1,5 @@
-import 'package:book/ChiTietSach/ChiTietSach.dart';
-import 'package:book/PageHome/PageHome.dart';
+import 'package:book/layout/detail.dart';
+import 'package:book/PageHome/pagehome.dart';
 import 'package:book/SignInSignUp/signin.dart';
 import 'package:book/SignInSignUp/signup.dart';
 import 'package:book/layout/menu.dart';
@@ -7,14 +7,14 @@ import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import '../Model/book.dart';
 
-class Pagehome extends StatefulWidget {
-  const Pagehome({super.key});
+class PageHome extends StatefulWidget {
+  const PageHome({super.key});
 
   @override
-  State<Pagehome> createState() => _PageHomeState();
+  State<PageHome> createState() => _PageHomeState();
 }
 
-class _PageHomeState extends State<Pagehome> {
+class _PageHomeState extends State<PageHome> {
   final List<String> imageUrls = [
     'https://static.vecteezy.com/system/resources/previews/021/916/224/non_2x/promo-banner-with-stack-of-books-globe-inkwell-quill-plant-lantern-ebook-world-book-day-bookstore-bookshop-library-book-lover-bibliophile-education-for-poster-cover-advertising-vector.jpg',
     'https://static.vecteezy.com/system/resources/previews/026/311/103/large_2x/literature-themed-banner-featuring-a-bookshelf-stack-of-hardcovered-books-and-copy-space-ai-generated-photo.jpg',
@@ -141,7 +141,7 @@ class _PageHomeState extends State<Pagehome> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => PageChiTietSach(book: book),
+                          builder: (context) => Detail(book: book),
                         ),
                       );
                     },

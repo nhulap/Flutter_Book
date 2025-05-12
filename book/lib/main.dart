@@ -1,4 +1,4 @@
-import 'package:book/PageHome/Pagehome.dart';
+import 'package:book/PageHome/pagehome.dart';
 import 'package:book/layout/list_book.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
-      home: kIsWeb ? const ListBook() : const Pagehome(),
+      home: kIsWeb ? const ListBook() : const PageHome(),
       //Web ==> Admin
       //App ==>Shop
     );
