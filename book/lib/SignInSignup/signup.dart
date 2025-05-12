@@ -30,7 +30,7 @@ class _SignupState extends State<Signup> {
       );
 
       if (response.user != null) {
-        Navigator.pushReplacement(context, 
+        Navigator.pushReplacement(context,
             MaterialPageRoute(builder: (context) => Pagehome(),)
         );
       }
@@ -98,3 +98,4 @@ class _SignupState extends State<Signup> {
     );
   }
 }
+// phan biet
