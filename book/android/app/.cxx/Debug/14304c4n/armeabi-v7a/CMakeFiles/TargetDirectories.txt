@@ -1,0 +1,2 @@
+C:/Github/Flutter_Book/book/android/app/.cxx/Debug/14304c4n/armeabi-v7a/CMakeFiles/edit_cache.dir
+C:/Github/Flutter_Book/book/android/app/.cxx/Debug/14304c4n/armeabi-v7a/CMakeFiles/rebuild_cache.dir
