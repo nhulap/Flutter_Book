@@ -1,4 +1,6 @@
 import 'package:book/PageHome/PageHome.dart';
+import 'package:book/SignInSignUp/signin.dart';
+import 'package:book/SignInSignUp/signup.dart';
 import 'package:book/layout/menu.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -30,13 +32,17 @@ class _PageHomeState extends State<Pagehome> {
               children: [
                 TextButton(
                   onPressed: () {
-                    print('Sign In');
+                    Navigator.push(context,
+                      MaterialPageRoute(builder:(context) => const Signin(),)
+                    );
                   },
                   child: const Text('Sign In', style: TextStyle(color: Colors.black)),
                 ),
                 TextButton(
                   onPressed: () {
-                    print('Sign Up');
+                    Navigator.push(context,
+                        MaterialPageRoute(builder:(context) => const Signup(),)
+                    );
                   },
                   child: const Text('Sign Up', style: TextStyle(color: Colors.black)),
                 ),
