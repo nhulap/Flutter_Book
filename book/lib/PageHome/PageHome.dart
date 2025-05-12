@@ -1,3 +1,4 @@
+import 'package:book/ChiTietSach/ChiTietSach.dart';
 import 'package:book/PageHome/PageHome.dart';
 import 'package:book/layout/menu.dart';
 import 'package:flutter/material.dart';
@@ -127,42 +128,53 @@ class _PageHomeState extends State<Pagehome> {
                 mainAxisSpacing: 10,
                 childAspectRatio: 0.6,
               ),
-              itemBuilder: (context, index) {
-                final book = Book.bestSellerBooks[index];
-                return Column(
-                  children: [
-                    Expanded(
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(8),
-                        child: Image.network(
-                          book.anh,
-                          fit: BoxFit.cover,
+                itemBuilder: (context, index) {
+                  final book = Book.bestSellerBooks[index];
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => PageChiTietSach(book: book),
                         ),
-                      ),
+                      );
+                    },
+                    child: Column(
+                      children: [
+                        Expanded(
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(8),
+                            child: Image.network(
+                              book.anh,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          book.tenSach,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(fontSize: 12),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          book.tacGia,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(fontSize: 10, fontStyle: FontStyle.italic),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          "${book.gia} VND",
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 4),
-                    Text(
-                      book.tenSach,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(fontSize: 12),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      book.tacGia,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(fontSize: 10, fontStyle: FontStyle.italic),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      "${book.gia} VND",
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-                    ),
-                  ],
-                );
-              },
+                  );
+                }
+
             ),
           ),
         ],

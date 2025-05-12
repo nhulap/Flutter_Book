@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../ChiTietSach/ChiTietSach.dart';
 import '../Model/book.dart';
 
 // Hàm lấy danh sách sách từ Supabase
@@ -93,11 +94,18 @@ class _MenuState extends State<Menu> {
                         height: 50,
                         fit: BoxFit.cover,
                         errorBuilder: (context, error, stackTrace) =>
-                            Icon(Icons.broken_image),
+                        Icon(Icons.broken_image),
                       ),
                       title: Text(book.tenSach),
-                      subtitle:
-                      Text("Tác giả: ${book.tacGia}\nGiá: ${book.gia}đ"),
+                      subtitle: Text("Tác giả: ${book.tacGia}\nGiá: ${book.gia}đ"),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => PageChiTietSach(book: book,),
+                          ),
+                        );
+                      },
                     );
                   },
                 );
