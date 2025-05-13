@@ -1,19 +1,21 @@
-import 'package:flutter/cupertino.dart';
+
+import 'package:book/Controller/book_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../Model/book.dart';
 
-Future<List<Book>> fetchBooksCungLoai(int loaiID, int bookID) async {
-  final response = await Supabase.instance.client
-      .from('Book')
-      .select()
-      .eq('loaiID', loaiID)
-      .neq('id', bookID); // Không lấy chính quyển sách đang xem
 
-  return (response as List)
-      .map((bookJson) => Book.fromJson(bookJson))
-      .toList();
+String formatNgay(DateTime date) {
+  try {
+    String day = date.day.toString().padLeft(2, '0');
+    String month = date.month.toString().padLeft(2, '0');
+    String year = date.year.toString();
+    return '$day/$month/$year';
+  } catch (e) {
+    return 'Không rõ';
+  }
 }
 
 class Detail extends StatefulWidget {
@@ -27,11 +29,12 @@ class Detail extends StatefulWidget {
 
 class _DetailState extends State<Detail> {
   late Future<List<Book>> futureBooksCungLoai;
+  final Book_Controller bookController = Get.put(Book_Controller());
 
   @override
   void initState() {
     super.initState();
-    futureBooksCungLoai = fetchBooksCungLoai(widget.book.loaiID, widget.book.id);
+    futureBooksCungLoai = bookController.fetchBooksCungLoai(widget.book.loaiID, widget.book.id);
   }
 
   @override
@@ -70,7 +73,10 @@ class _DetailState extends State<Detail> {
                         SizedBox(height: 4),
                         Text("Giá: ${book.gia}đ", style: TextStyle(fontSize: 16, color: Colors.red)),
                         SizedBox(height: 4),
-                        Text("Ngày phát hành:${book.ngayXB}" ),
+                        Text(
+                          "Ngày phát hành: ${formatNgay(book.ngayXB)}",
+                          style: TextStyle(fontSize: 16),
+                        ),
                         SizedBox(height: 4),
                         Text("Nhà xuất bản: ${book.nhaXB}", style: TextStyle(fontSize: 16)),
                       ],
@@ -81,8 +87,12 @@ class _DetailState extends State<Detail> {
 
               SizedBox(height: 16),
               Text("Mô tả:", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-              SizedBox(height: 4),
-              Text(book.moTa, style: TextStyle(fontSize: 14)),
+              SizedBox(height: 10),
+              Text(
+                book.moTa,
+                style: TextStyle(fontSize: 14, color: Colors.black87),
+              ),
+
 
               SizedBox(height: 16),
               ElevatedButton(
@@ -148,6 +158,15 @@ class _DetailState extends State<Detail> {
           ),
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          // Chuyển sang trang thêm sách
+          // Ví dụ: Navigator.push(...PageAddBook());
+        },
+        backgroundColor: Colors.pinkAccent,
+        child: const Icon(Icons.shopping_cart),
+      ),
     );
+
   }
 }

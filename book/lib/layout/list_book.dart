@@ -24,8 +24,6 @@ class ListBook extends StatelessWidget {
         builder: (context, snapshot) {
           return AsyncWidget(
             snapshot: snapshot,
-            loading: () => const Center(child: CircularProgressIndicator()),
-            error: () => const Center(child: Text("Không thể tải dữ liệu")),
             builder: (context, snapshot) {
               final books = snapshot.data!;
               return ListView.separated(

@@ -1,117 +1,53 @@
-import 'package:book/SignInSignUp/signup.dart';
-import 'package:book/PageHome/pagehome.dart';
+import 'package:book/Controller/login_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:get/get.dart';
 
-class Signin extends StatefulWidget {
-  const Signin({super.key});
+class LoginPage extends StatelessWidget {
+  final Login_Controller loginController = Get.put(Login_Controller());
 
-  @override
-  State<Signin> createState() => _SigninState();
-}
+  final TextEditingController usernameController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
 
-class _SigninState extends State<Signin> {
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
-  bool _loading = false;
-  String? _error;
-
-  Future<void> _signIn() async {
-    setState(() {
-      _loading = true;
-      _error = null;
-    });
-
-    try {
-      final supabase = Supabase.instance.client;
-      final response = await supabase.auth.signInWithPassword(
-        email: _emailController.text.trim(),
-        password: _passwordController.text.trim(),
-      );
-
-      if (response.user != null) {
-        Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (context) => const PageHome())
-        );
-      }
-    } catch (e) {
-      setState(() {
-        _error = 'Sai email hoặc mật khẩu.';
-      });
-    } finally {
-      setState(() {
-        _loading = false;
-      });
-    }
-  }
+  LoginPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Trang Đăng Nhập"),
+        title: const Text("Đăng Nhập"),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(10.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text("Email"),
             TextField(
-              controller: _emailController,
+              controller: usernameController,
               decoration: const InputDecoration(
-                hintText: 'Nhập email',
-              ),
-              keyboardType: TextInputType.emailAddress,
+                  labelText: "Tài khoản", border: OutlineInputBorder()),
             ),
-            const SizedBox(height: 16),
-            const Text("Mật khẩu"),
+            const SizedBox(height: 20),
             TextField(
-              controller: _passwordController,
+              controller: passwordController,
               decoration: const InputDecoration(
-                hintText: 'Nhập mật khẩu',
-              ),
+                  labelText: "Mật khẩu", border: OutlineInputBorder()),
               obscureText: true,
             ),
             const SizedBox(height: 20),
-            if (_error != null)
-              Text(
-                _error!,
-                style: const TextStyle(color: Colors.red),
-              ),
             ElevatedButton(
-              onPressed: _loading ? null : _signIn,
-              child: _loading
-                  ? const CircularProgressIndicator()
-                  : const Text("Đăng nhập"),
+              onPressed: () {
+                print("Đang thực hiện đăng nhập...");
+                loginController.login(
+                  usernameController.text,
+                  passwordController.text,
+                );
+              },
+              child: const Text("Đăng Nhập"),
             ),
-            const SizedBox(height: 20),
-            Center(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text("Bạn chưa có tài khoản? "),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => const Signup(),)
-                      );
-                    },
-                    child: const Text(
-                      "Đăng ký ngay",
-                      style: TextStyle(
-                        color: Colors.blue,
-                        decoration: TextDecoration.underline,
-                      ),
-                    ),
-                  )
-                ],
-              ),
-            )
+
           ],
         ),
       ),
     );
   }
 }
-// phan biet

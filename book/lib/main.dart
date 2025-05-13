@@ -1,6 +1,8 @@
+import 'package:book/Controller/login_controller.dart';
 import 'package:book/PageHome/pagehome.dart';
 import 'package:book/layout/list_book.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 
@@ -21,7 +23,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    Get.put(Login_Controller());
+    return GetMaterialApp(
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
       home: kIsWeb ? const ListBook() : const PageHome(),

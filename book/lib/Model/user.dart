@@ -1,17 +1,20 @@
-class User{
+class ModelUser{
   final int id;
   final String tenKH;
-  final int soDienThoai;
+  final String soDienThoai;
   final String diaChi;
+  final String password;
 
-  User({required this.id,required this.tenKH,required this.soDienThoai,required this.diaChi});
+  ModelUser({required this.id,required this.tenKH,required this.soDienThoai,required this.diaChi,required this.password});
 
-  factory User.fromJson(Map<String, dynamic> json) {
-    return User(
+  // Hàm khởi tạo từ JSON
+  factory ModelUser.fromJson(Map<String, dynamic> json) {
+    return ModelUser(
       id: json["id"],
-      tenKH: json["tenKH"],
-      soDienThoai: json["soDienThoai"],
-      diaChi: json["diaChi"],
+      tenKH: json["tenKH"] ?? '',
+      soDienThoai: json["soDienThoai"] ?? '',
+      diaChi: json["diaChi"] ?? '',
+      password: json["password"] ?? '',
     );
   }
 
@@ -21,6 +24,7 @@ class User{
       "tenKH": this.tenKH,
       "soDienThoai": this.soDienThoai,
       "diaChi": this.diaChi,
+      "password": this.password,
     };
   }
 

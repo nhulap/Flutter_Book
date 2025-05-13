@@ -1,20 +1,10 @@
+import 'package:book/layout/detail.dart';
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:get/get.dart';
 
-import 'detail.dart';
+import '../Async/asyncwidget.dart';
+import '../Controller/book_controller.dart';
 import '../Model/book.dart';
-
-// Hàm lấy danh sách sách từ Supabase
-Future<List<Book>> fetchBooks() async {
-  final response = await Supabase.instance.client
-      .from('Book')
-      .select()
-      .order('id', ascending: true);
-
-  return (response as List)
-      .map((bookJson) => Book.fromJson(bookJson))
-      .toList();
-}
 
 class Menu extends StatefulWidget {
   const Menu({super.key});
@@ -24,28 +14,22 @@ class Menu extends StatefulWidget {
 }
 
 class _MenuState extends State<Menu> {
-  late Future<List<Book>> _booksFuture;
-  List<Book> _allBooks = [];
-  List<Book> _filteredBooks = [];
-  String _searchText = '';
+  final Book_Controller bookController = Get.put(Book_Controller());
+  late Future<List<Book>> _futureBooks;
+  String _searchQuery = '';
 
   @override
   void initState() {
     super.initState();
-    _booksFuture = fetchBooks().then((books) {
-      _allBooks = books;
-      _filteredBooks = books;
-      return books;
-    });
+    _futureBooks = bookController.fetchBooks();
   }
 
-  void _filterBooks(String query) {
+  void _search(String query) {
     setState(() {
-      _searchText = query;
-      _filteredBooks = _allBooks
-          .where((book) =>
-          book.tenSach.toLowerCase().contains(query.toLowerCase()))
-          .toList();
+      _searchQuery = query;
+      _futureBooks = query.isEmpty
+          ? bookController.fetchBooks()
+          : bookController.searchBooks(query);
     });
   }
 
@@ -53,56 +37,98 @@ class _MenuState extends State<Menu> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Danh sách các loại sách"),
+        title: const Text("Danh sách các loại sách"),
       ),
       body: Column(
         children: [
-          // Thanh tìm kiếm
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: TextField(
               decoration: InputDecoration(
                 hintText: 'Tìm kiếm sách...',
-                prefixIcon: Icon(Icons.search),
+                prefixIcon: const Icon(Icons.search),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
               ),
-              onChanged: _filterBooks,
+              onChanged: _search,
             ),
           ),
           Expanded(
             child: FutureBuilder<List<Book>>(
-              future: _booksFuture,
+              future: _futureBooks,
               builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return Center(child: Text("Lỗi: ${snapshot.error}"));
-                } else if (_filteredBooks.isEmpty) {
-                  return Center(child: Text("Không tìm thấy sách phù hợp."));
-                }
-
-                return ListView.builder(
-                  itemCount: _filteredBooks.length,
-                  itemBuilder: (context, index) {
-                    final book = _filteredBooks[index];
-                    return ListTile(
-                      leading: Image.network(
-                        book.anh,
-                        width: 50,
-                        height: 50,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) =>
-                        Icon(Icons.broken_image),
+                return AsyncWidget(
+                  snapshot: snapshot,
+                  builder: (context, snapshot) {
+                    final books = snapshot.data ?? [];
+                    if (books.isEmpty) {
+                      return const Center(child: Text("Không tìm thấy sách."));
+                    }
+                    return GridView.builder(
+                      padding: const EdgeInsets.all(8),
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 10,
+                        mainAxisSpacing: 10,
+                        childAspectRatio: 0.6,
                       ),
-                      title: Text(book.tenSach),
-                      subtitle: Text("Tác giả: ${book.tacGia}\nGiá: ${book.gia}đ"),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => Detail(book: book,),
+                      itemCount: books.length,
+                      itemBuilder: (context, index) {
+                        final book = books[index];
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => Detail(book: book,),
+                              ),
+                            );
+                          },
+                          child: Card(
+                            elevation: 4,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                Expanded(
+                                  child: Image.network(
+                                    book.anh,
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (context, error, stackTrace) =>
+                                    const Icon(Icons.broken_image),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                    book.tenSach,
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                  child: Text(
+                                    book.tacGia,
+                                    style: const TextStyle(fontSize: 14),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                  child: Text(
+                                    "${book.gia}đ",
+                                    style: const TextStyle(fontSize: 14),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         );
                       },
@@ -116,9 +142,9 @@ class _MenuState extends State<Menu> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // Action cho nút giỏ hàng
+          // TODO: Xử lý mở giỏ hàng
         },
-        child: Icon(Icons.shopping_cart),
+        child: const Icon(Icons.shopping_cart),
       ),
     );
   }
