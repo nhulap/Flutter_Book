@@ -1,4 +1,5 @@
 import 'package:book/Controller/login_controller.dart';
+import 'package:book/Controller/user_controller.dart';
 import 'package:book/PageHome/pagehome.dart';
 import 'package:book/layout/list_book.dart';
 import 'package:flutter/material.dart';
@@ -17,21 +18,23 @@ void main() async{
   runApp(const MyApp());
 
 }
-
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    Get.put(Login_Controller());
     return GetMaterialApp(
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
+      initialBinding: BindingsBuilder(() {
+        Get.put(User_Controller()); // Đảm bảo UserController được khởi tạo
+      }),
       home: kIsWeb ? const ListBook() : const PageHome(),
       //Web ==> Admin
-      //App ==>Shop
+      //App ==> Shop
     );
   }
 }
+
 
 final supabase = Supabase.instance.client;

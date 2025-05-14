@@ -1,5 +1,6 @@
 
 import 'package:book/Controller/book_controller.dart';
+import 'package:book/layout/cart.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -160,8 +161,9 @@ class _DetailState extends State<Detail> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // Chuyển sang trang thêm sách
-          // Ví dụ: Navigator.push(...PageAddBook());
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => CartPage(),)
+          );
         },
         backgroundColor: Colors.pinkAccent,
         child: const Icon(Icons.shopping_cart),

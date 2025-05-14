@@ -1,26 +1,33 @@
-class Cart{
-  final int idBook;
-  final int idUser;
-  final int soLuong;
+import 'package:book/Model/book.dart';
 
-  Cart({required this.idBook,required this.idUser,required this.soLuong});
+class CartItem {
+  final Book book; // Lưu toàn bộ đối tượng Book thay vì chỉ lưu id
+  late final int soLuong;
+  late final bool selected;
 
-  Map<String, dynamic> toJson() {
+  CartItem({
+    required this.book,
+    required this.soLuong,
+    this.selected = true,
+  });
+
+  // Chuyển CartItem thành Map để lưu vào cơ sở dữ liệu
+  Map<String, dynamic> toJson(int code) {
     return {
-      "idBook": this.idBook,
-      "idUser": this.idUser,
-      "soLuong": this.soLuong,
+      'order_id': code,
+      'book_id': book.id, // Lưu lại bookId
+      'quantity': soLuong,
+      'price': book.gia, // Lưu giá sách
+      'state': 'đã đặt',
     };
   }
 
-  factory Cart.fromJson(Map<String, dynamic> json) {
-    return Cart(
-      idBook: json["idBook"],
-      idUser: json["idUser"],
-      soLuong: json["soLuong"],
+  // Phương thức khôi phục CartItem từ Map
+  factory CartItem.fromJson(Map<String, dynamic> json) {
+    return CartItem(
+      book: Book.fromJson(json['book']), // Giải mã đối tượng Book từ Map
+      soLuong: json['quantity'],
+      selected: json['state'] == 'đã đặt',
     );
   }
-
-
-//
 }

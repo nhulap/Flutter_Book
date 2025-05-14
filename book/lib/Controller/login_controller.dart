@@ -5,6 +5,7 @@ import 'user_controller.dart';
 
 class Login_Controller extends GetxController {
   final supabase = Supabase.instance.client;
+
   Future<void> login(String tenKH, String password) async {
     if (tenKH.isEmpty || password.isEmpty) {
       if (Get.context != null) {
@@ -28,8 +29,8 @@ class Login_Controller extends GetxController {
       print("Kết quả truy vấn: $loginUser");
 
       if (loginUser != null) {
-        // final id = loginUser['id'];
-        // Get.find<UserController>().setUser(id);
+        final id = loginUser['id'];
+        Get.find<User_Controller>().setUser(id);
         if (Get.context != null) {
           Get.snackbar('Thành công', 'Đăng nhập thành công');
         }
@@ -50,6 +51,4 @@ class Login_Controller extends GetxController {
       }
     }
   }
-
-
 }
