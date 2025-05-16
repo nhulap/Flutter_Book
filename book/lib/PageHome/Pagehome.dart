@@ -1,7 +1,9 @@
+import 'package:book/Controller/user_controller.dart';
 import 'package:book/layout/detail.dart';
 import 'package:book/SignInSignUp/signin.dart';
 import 'package:book/SignInSignUp/signup.dart';
 import 'package:book/layout/menu.dart';
+import 'package:book/layout/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import '../Model/book.dart';
@@ -23,37 +25,94 @@ class _PageHomeState extends State<PageHome> {
   ];
 
   final Book_Controller bookController = Get.put(Book_Controller()); // Khởi tạo controller
+  final UserController userController = Get.put(UserController());
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text("Trang Chủ"),
         actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 10.0),
-            child: Row(
-              children: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder:(context) =>  LoginPage(),)
-                    );
-                  },
-                  child: const Text('Sign In', style: TextStyle(color: Colors.black)),
-                ),
-                TextButton(
-                  onPressed: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder:(context) => const Signup(),)
-                    );
-                  },
-                  child: const Text('Sign Up', style: TextStyle(color: Colors.black)),
-                ),
-              ],
-            ),
-          ),
+          Obx(() {
+            if (!userController.isLoggedIn.value) {
+              // Chưa đăng nhập: hiện Sign In + Sign Up
+              return Row(
+                children: [
+                  TextButton(
+                    style: TextButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      backgroundColor: Colors.amber,
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => LoginPage()));
+                    },
+                    child: const Text('Sign In'),
+                  ),
+                  const SizedBox(width: 6),
+                  TextButton(
+                    style: TextButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      backgroundColor: Colors.deepPurpleAccent,
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => const Signup()));
+                    },
+                    child: const Text('Sign Up'),
+                  ),
+                ],
+              );
+            } else {
+              // Đã đăng nhập: hiện nút Profile và Sign Out
+              return Row(
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.account_circle, color: Colors.red, size: 28),
+                    tooltip: 'Hồ sơ',
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => Profile()),
+                      );
+                    },
+                  ),
+
+                  const SizedBox(width: 6),
+                  TextButton(
+                    style: TextButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      backgroundColor: Colors.redAccent,
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    onPressed: () {
+                      userController.clearUser();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Đã đăng xuất')),
+                      );
+                    },
+                    child: const Text('Sign Out'),
+                  ),
+                ],
+              );
+            }
+          }),
         ],
+
+
       ),
       body: SingleChildScrollView(
         child: Column(

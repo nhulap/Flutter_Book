@@ -1,5 +1,6 @@
 
 import 'package:book/Controller/book_controller.dart';
+import 'package:book/Controller/cart_controller.dart';
 import 'package:book/layout/cart.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -98,10 +99,13 @@ class _DetailState extends State<Detail> {
               SizedBox(height: 16),
               ElevatedButton(
                 onPressed: () {
+                  final cartController = Get.find<CartController>();
+                  cartController.addToCart(book, 1); // sửa ở đây ✅
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text("Đã thêm vào giỏ hàng")),
                   );
                 },
+
                 child: Text("Thêm vào giỏ hàng", style: TextStyle(color: Colors.black)),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue,

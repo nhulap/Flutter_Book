@@ -30,7 +30,7 @@ class Login_Controller extends GetxController {
 
       if (loginUser != null) {
         final id = loginUser['id'];
-        Get.find<User_Controller>().setUser(id);
+        Get.find<UserController>().setUser(id);
         if (Get.context != null) {
           Get.snackbar('Thành công', 'Đăng nhập thành công');
         }

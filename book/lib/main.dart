@@ -1,3 +1,4 @@
+import 'package:book/Controller/cart_controller.dart';
 import 'package:book/Controller/login_controller.dart';
 import 'package:book/Controller/user_controller.dart';
 import 'package:book/PageHome/pagehome.dart';
@@ -27,7 +28,8 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
       initialBinding: BindingsBuilder(() {
-        Get.put(User_Controller()); // Đảm bảo UserController được khởi tạo
+        Get.put(UserController()); // Đảm bảo UserController được khởi tạo
+        Get.put(CartController());
       }),
       home: kIsWeb ? const ListBook() : const PageHome(),
       //Web ==> Admin
