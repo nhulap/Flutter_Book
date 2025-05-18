@@ -1,4 +1,3 @@
-
 import 'package:book/Controller/cart_controller.dart';
 import 'package:book/layout/check.dart';
 import 'package:flutter/material.dart';
@@ -8,13 +7,15 @@ class PaymentConfirmation extends StatelessWidget {
   PaymentConfirmation({super.key});
 
   final CartController controller = Get.put(CartController());
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController phoneController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         iconTheme: const IconThemeData(color: Colors.white),
-        backgroundColor: Colors.orange,
+        backgroundColor: Colors.blue,  // đổi sang màu xanh
         title: const Text(
           "Thông tin giao hàng",
           style: TextStyle(
@@ -31,8 +32,8 @@ class PaymentConfirmation extends StatelessWidget {
         padding: const EdgeInsets.all(20),
         child: ElevatedButton(
             style: const ButtonStyle(
-                backgroundColor: WidgetStatePropertyAll(Colors.orange),
-                padding: WidgetStatePropertyAll(EdgeInsets.all(10))),
+                backgroundColor: MaterialStatePropertyAll(Colors.blue), // đổi sang màu xanh
+                padding: MaterialStatePropertyAll(EdgeInsets.all(10))),
             onPressed: () {
               Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => const CheckOrders(),
@@ -58,7 +59,7 @@ class PaymentConfirmation extends StatelessWidget {
                       height: 50,
                       alignment: Alignment.center,
                       decoration: const BoxDecoration(
-                        color: Colors.orange,
+                        color: Colors.blue,  // đổi sang xanh
                         shape: BoxShape.circle,
                       ),
                       child: const Icon(
@@ -72,7 +73,7 @@ class PaymentConfirmation extends StatelessWidget {
                         height: 5,
                         width: 100,
                         child: ColoredBox(
-                          color: Colors.orange,
+                          color: Colors.blue,  // đổi sang xanh
                         ),
                       ),
                     ),
@@ -81,7 +82,7 @@ class PaymentConfirmation extends StatelessWidget {
                       height: 50,
                       alignment: Alignment.center,
                       decoration: const BoxDecoration(
-                        color: Colors.orange,
+                        color: Colors.blue,  // đổi sang xanh
                         shape: BoxShape.circle,
                       ),
                       child: const Text(
@@ -98,7 +99,7 @@ class PaymentConfirmation extends StatelessWidget {
                         height: 5,
                         width: 100,
                         child: ColoredBox(
-                          color: Colors.orange,
+                          color: Colors.blue,  // đổi sang xanh
                         ),
                       ),
                     ),
@@ -108,14 +109,14 @@ class PaymentConfirmation extends StatelessWidget {
                       alignment: Alignment.center,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        border: Border.all(width: 3, color: Colors.orange),
+                        border: Border.all(width: 3, color: Colors.blue),  // đổi sang xanh
                       ),
                       child: const Text(
                         "3",
                         textAlign: TextAlign.center,
                         style: TextStyle(
                             fontSize: 25,
-                            color: Colors.orange,
+                            color: Colors.blue,  // đổi sang xanh
                             fontWeight: FontWeight.bold),
                       ),
                     ),
@@ -152,7 +153,7 @@ class PaymentConfirmation extends StatelessWidget {
                 ),
               ),
               RadioListTile(
-                fillColor: const WidgetStatePropertyAll(Colors.orange),
+                fillColor: const MaterialStatePropertyAll(Colors.blue),  // đổi sang xanh
                 title: const Text(
                   "Giao hàng tiêu chuẩn: 12",
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
@@ -181,7 +182,7 @@ class PaymentConfirmation extends StatelessWidget {
                 ),
               ),
               RadioListTile(
-                fillColor: const WidgetStatePropertyAll(Colors.orange),
+                fillColor: const MaterialStatePropertyAll(Colors.blue),  // đổi sang xanh
                 title: const Text(
                   "Thanh toán bằng tiền mặt khi nhận hàng",
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
@@ -229,7 +230,7 @@ class PaymentConfirmation extends StatelessWidget {
                   ),
                   Text(
                     "${controller.totalPrice() + (12.00)}",
-                    style: const TextStyle(color: Colors.orange, fontSize: 20),
+                    style: const TextStyle(color: Colors.blue, fontSize: 20),  // đổi sang xanh
                   )
                 ],
               )

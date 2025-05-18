@@ -36,7 +36,8 @@ class CartItem {
 
 class  CartSnapShot {
   static Map<String, dynamic> addOrder(
-      double sum, String s, int code, int user, String note) {
+      double sum, String s, int code, int user, String note,String name,
+      String phone,) {
     return {
       'id': code,
       'user_id': user,
@@ -44,30 +45,31 @@ class  CartSnapShot {
       'tinhTien': sum,
       'diaChi': s,
       'ghiChu': note,  // Ghi chú đơn hàng
+      'nguoiNhan': name,            // Thêm tên
+      'phone': phone,   // Thêm số điện thoại
     };
   }
-
   static Future<void> insert(
-      List<CartItem> list, int userId, List<String> address, String note) async {
+      List<CartItem> list, int userId, String address, String note,String name,
+      String phone,) async {
     final supabase = Supabase.instance.client;
-    String addr = "";
     int code = DateTime.now().millisecondsSinceEpoch;
 
-    // Gộp địa chỉ
-    for (int i = 3; i < address.length; i++) {
-      addr += "${address[i]} ";
-    }
+    // Dùng nguyên địa chỉ đã truyền, không cắt
+    String addr = address.trim();
 
     // Tính tổng tiền
     double sum = 0;
     for (CartItem i in list) {
       sum += i.book.gia * i.sl;
     }
+    final dataOrder = CartSnapShot.addOrder(sum, addr, code, userId, note, name, phone);
+    print('Dữ liệu order gửi lên: $dataOrder');
 
     // Thêm vào bảng Orders
     await supabase
         .from("Orders")
-        .insert(CartSnapShot.addOrder(sum, addr.trim(), code, userId, note))
+        .insert(CartSnapShot.addOrder(sum, addr, code, userId, note, name, phone))
         .then((value) => print("Đã thêm order"))
         .catchError((error) => print("Lỗi thêm order: $error"));
 
@@ -80,5 +82,6 @@ class  CartSnapShot {
           .catchError((error) => print("Lỗi thêm order_item: $error"));
     }
   }
+
 }
 

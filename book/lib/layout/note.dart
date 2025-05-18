@@ -1,6 +1,5 @@
-
 import 'package:book/Controller/cart_controller.dart';
-import 'package:book/PageHome/pagehome.dart';
+import 'package:book/Model/cart.dart';
 import 'package:book/layout/pay.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -11,28 +10,40 @@ class Note extends StatelessWidget {
   Note({super.key});
 
   final controller = Get.put(CartController());
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController phoneController = TextEditingController();
+  final TextEditingController addressController = TextEditingController();
   final TextEditingController noteController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
+    final mainBlue = Colors.blue[700]!;
+    final lightBlue = Colors.blue[200]!;
+
     return Scaffold(
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(15.0),
         child: ElevatedButton(
             style: const ButtonStyle(
-                backgroundColor: WidgetStatePropertyAll(Colors.orange),
-                padding: WidgetStatePropertyAll(EdgeInsets.all(20))),
+                backgroundColor: MaterialStatePropertyAll(Colors.blue), // đổi sang màu xanh
+                padding: MaterialStatePropertyAll(EdgeInsets.all(10))),
             onPressed: () {
-              controller.addressHandle(addressList, noteController.text);
-              Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => PaymentConfirmation(),
-              ));
+              // Cập nhật dữ liệu vào controller (chỉ lưu tạm)
+              controller.addressHandle(
+                addressController.text,
+                noteController.text,
+                nameController.text,
+                phoneController.text,
+              );
+
+              // Chuyển sang trang Check (chưa gửi dữ liệu lên Supabase)
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => PaymentConfirmation()),
+              );
             },
             child: const Text(
-              "Xác nhận địa chỉ",
-              style: TextStyle(
-                  fontSize: 23,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white),
+              "Thanh toán",
+              style: TextStyle(color: Colors.white, fontSize: 25),
             )),
       ),
       appBar: AppBar(
@@ -43,44 +54,51 @@ class Note extends StatelessWidget {
             Navigator.of(context).pop();
           },
         ),
-        backgroundColor: Colors.orange,
+        backgroundColor: mainBlue,
         title: const Text(
           "Thông tin giao hàng",
           style: TextStyle(
-              fontWeight: FontWeight.w900, fontSize: 25, color: Colors.white),
+            fontWeight: FontWeight.w900,
+            fontSize: 25,
+            color: Colors.white,
+          ),
         ),
       ),
       body: SingleChildScrollView(
+        padding: const EdgeInsets.all(20),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: const EdgeInsets.only(
-                  left: 40, right: 40, top: 10, bottom: 10),
+              padding:
+              const EdgeInsets.only(left: 40, right: 40, top: 10, bottom: 10),
               child: Row(
                 children: [
                   Container(
                     width: 50,
                     height: 50,
                     alignment: Alignment.center,
-                    decoration: const BoxDecoration(
-                      color: Colors.orange,
+                    decoration: BoxDecoration(
                       shape: BoxShape.circle,
+                      border: Border.all(width: 3, color: mainBlue),
                     ),
-                    child: const Text(
+                    child: Text(
                       "1",
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                          fontSize: 25,
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold),
+                        fontSize: 25,
+                        color: mainBlue,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
-                  const Expanded(
+
+                  Expanded(
                     child: SizedBox(
                       height: 5,
                       width: 100,
                       child: ColoredBox(
-                        color: Colors.orange,
+                        color: lightBlue,
                       ),
                     ),
                   ),
@@ -89,24 +107,25 @@ class Note extends StatelessWidget {
                     height: 50,
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
-                      border: Border.all(width: 3, color: Colors.orange),
                       shape: BoxShape.circle,
+                      border: Border.all(width: 3, color: mainBlue),
                     ),
-                    child: const Text(
+                    child: Text(
                       "2",
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                          fontSize: 25,
-                          color: Colors.orange,
-                          fontWeight: FontWeight.bold),
+                        fontSize: 25,
+                        color: mainBlue,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
-                  const Expanded(
+                  Expanded(
                     child: SizedBox(
                       height: 5,
                       width: 100,
                       child: ColoredBox(
-                        color: Colors.orange,
+                        color: lightBlue,
                       ),
                     ),
                   ),
@@ -116,15 +135,16 @@ class Note extends StatelessWidget {
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      border: Border.all(width: 3, color: Colors.orange),
+                      border: Border.all(width: 3, color: mainBlue),
                     ),
-                    child: const Text(
+                    child: Text(
                       "3",
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                          fontSize: 25,
-                          color: Colors.orange,
-                          fontWeight: FontWeight.bold),
+                        fontSize: 25,
+                        color: mainBlue,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ],
@@ -135,71 +155,93 @@ class Note extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    "Giao hàng",
-                    style: TextStyle(fontSize: 20),
-                  ),
+                  Text("Giao hàng", style: TextStyle(fontSize: 20)),
                   Text("Thanh toán", style: TextStyle(fontSize: 20)),
-                  Text("Kiểm tra", style: TextStyle(fontSize: 20))
+                  Text("Kiểm tra", style: TextStyle(fontSize: 20)),
                 ],
               ),
             ),
-            Container(
-              padding: const EdgeInsets.only(left: 15, top: 20, bottom: 20),
-              color: Colors.blueGrey[50],
-              child: const Row(
-                children: [
-                  Text(
-                    "Địa chỉ đặt hàng",
-                    style: TextStyle(
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
+            const SizedBox(height: 20),
+            const Text(
+              "Thông tin giao hàng",
+              style: TextStyle(
+                fontSize: 26,
+                fontWeight: FontWeight.bold,
+                color: Colors.black87,
               ),
             ),
-            textfield("Họ và tên người nhận", 0),
-            textfield("SDT", 1),
-            textfield("Quốc gia", 2),
-            textfield("Tỉnh / Thành phố", 3),
-            textfield("Quận / Huyện", 4),
-            textfield("Phường / Xã", 5),
-            textfield("Địa chỉ ", 6),
-            textfield("Ghi chú đơn hàng", -1),
+            const SizedBox(height: 20),
+            buildInputField(
+              "Họ và tên",
+              nameController,
+              Icons.person,
+              mainBlue,
+              onChanged: (value) {
+                controller.addressHandle(
+                  addressController.text,
+                  noteController.text,
+                  value,                // tên vừa nhập
+                  phoneController.text, // giữ số điện thoại hiện tại
+                );
+              },
+            ),
+            const SizedBox(height: 15),
+            buildInputField(
+              "Số điện thoại",
+              phoneController,
+              Icons.phone,
+              mainBlue,
+              onChanged: (value) {
+                controller.addressHandle(
+                  addressController.text,
+                  noteController.text,
+                  nameController.text,  // giữ tên hiện tại
+                  value,                // số điện thoại vừa nhập
+                );
+              },
+            ),
+            const SizedBox(height: 15),
+            buildInputField(
+                "Địa chỉ nhận hàng", addressController, Icons.location_on, mainBlue),
+            const SizedBox(height: 15),
+            buildInputField("Ghi chú đơn hàng", noteController, Icons.note, mainBlue),
+            const SizedBox(height: 30),
           ],
         ),
       ),
     );
   }
-  Widget textfield(String title, int index) {
-    TextEditingController controller;
 
-    if (index == -1) {
-      // Ghi chú
-      controller = noteController;
-    } else {
-      if (addressList.length <= index) {
-        addressList.insert(index, TextEditingController());
-      }
-      controller = addressList[index];
-    }
-
-    return ListTile(
-      title: Text(
-        title,
-        style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
-      ),
-      subtitle: TextField(
-        controller: controller,
-        decoration: InputDecoration(
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(5),
-            borderSide: const BorderSide(width: 3, color: Colors.grey),
+  Widget buildInputField(
+      String label,
+      TextEditingController controller,
+      IconData icon,
+      Color mainBlue, {
+        void Function(String)? onChanged,  // thêm callback onChanged tùy chọn
+      }) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: const [
+          BoxShadow(
+            color: Colors.black12,
+            blurRadius: 5,
+            offset: Offset(0, 3),
           ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(5),
-            borderSide: const BorderSide(width: 1, color: Colors.grey),
+        ],
+      ),
+      child: TextField(
+        controller: controller,
+        onChanged: onChanged,   // thêm onChanged ở đây
+        decoration: InputDecoration(
+          prefixIcon: Icon(icon, color: mainBlue),
+          labelText: label,
+          labelStyle: const TextStyle(fontSize: 18),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: mainBlue, width: 2),
           ),
         ),
       ),

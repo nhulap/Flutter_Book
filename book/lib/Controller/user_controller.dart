@@ -73,4 +73,24 @@ class UserController extends GetxController {
       throw Exception('Không thể cập nhật trạng thái: $e');
     }
   }
+
+  Future<void> updateUser(ModelUser user) async {
+    try {
+      await _client
+          .from('User')
+          .update({
+        'tenKH': user.tenKH,
+        'soDienThoai': user.soDienThoai,
+        'diaChi': user.diaChi,
+        'email': user.email,
+        'nickname': user.nickname,
+        // Nếu bạn có password, hoặc các trường khác thì thêm vào đây
+      })
+          .eq('id', user.id);
+    } catch (e) {
+      throw Exception('Không thể cập nhật thông tin người dùng: $e');
+    }
+  }
+
+
 }

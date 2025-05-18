@@ -6,8 +6,8 @@ import 'user_controller.dart';
 class Login_Controller extends GetxController {
   final supabase = Supabase.instance.client;
 
-  Future<void> login(String tenKH, String password) async {
-    if (tenKH.isEmpty || password.isEmpty) {
+  Future<void> login(String nickname, String password) async {
+    if (nickname.isEmpty || password.isEmpty) {
       if (Get.context != null) {
         Get.snackbar('Lỗi', 'Vui lòng điền đầy đủ thông tin');
       } else {
@@ -16,13 +16,13 @@ class Login_Controller extends GetxController {
       return;
     }
 
-    print("Bắt đầu kiểm tra username: $tenKH - password: $password");
+    print("Bắt đầu kiểm tra username: $nickname - password: $password");
 
     try {
       final loginUser = await supabase
           .from('User') // đảm bảo bảng đúng tên
           .select()
-          .eq('tenKH', tenKH)
+          .eq('nickname', nickname)
           .eq('password', password)
           .maybeSingle();
 
