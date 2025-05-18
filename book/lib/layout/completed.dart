@@ -1,4 +1,3 @@
-
 import 'package:book/PageHome/pagehome.dart';
 import 'package:flutter/material.dart';
 
@@ -8,114 +7,108 @@ class Completed extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text(
           "Thanh Toán",
           style: TextStyle(
-              color: Colors.white, fontWeight: FontWeight.bold, fontSize: 30),
-        ),
-        backgroundColor: Colors.orange,
-        leading: IconTheme(
-          data: const IconThemeData(
             color: Colors.white,
-            size: 40.0,
+            fontWeight: FontWeight.bold,
+            fontSize: 26,
           ),
-          child: IconButton(
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () {
-              Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(builder: (context) => const PageHome()),
-                    (Route<dynamic> route) => false,
-              );
-            },
-          ),
+        ),
+        centerTitle: true,
+        backgroundColor: Colors.blue,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          iconSize: 30,
+          color: Colors.white,
+          onPressed: () {
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => const PageHome()),
+                  (Route<dynamic> route) => false,
+            );
+          },
         ),
       ),
-      body: Container(
-        color: Colors.white,
-        padding: const EdgeInsets.only(left: 30, right: 30),
-        width: double.maxFinite,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const Icon(
-              Icons.check_circle_outline_sharp,
-              size: 150,
-              color: Colors.orange,
-            ),
-            const Text(
-              "CẢM ƠN BẠN ĐÃ MUA HÀNG",
-              style: TextStyle(fontSize: 25, color: Colors.orange),
-            ),
-            const SizedBox(
-              height: 30,
-            ),
-            const Text("Bạn đã đặt hàng thành công",
-                style: TextStyle(fontSize: 20)),
-            // Row(
-            //   mainAxisAlignment: MainAxisAlignment.center,
-            //   children: [
-            //     Text("Số đơn hàng: ",style: TextStyle(fontSize: 20)),
-            //     Text("#402316442",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold)),
-            //   ],
-            // ),
-            const SizedBox(
-              height: 20,
-            ),
-            const Text(
-              "Bạn sẽ sớm nhận được email xác nhận đơn hàng từ chúng tôi",
-              style: TextStyle(fontSize: 20),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            Row(
-              children: [
-                Expanded(
-                  child: ElevatedButton(
-                    style: const ButtonStyle(
-                        backgroundColor: WidgetStatePropertyAll(Colors.orange),
-                        padding: WidgetStatePropertyAll(EdgeInsets.all(15))),
-                    onPressed: () {
-                      Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const PageHome()),
-                            (Route<dynamic> route) => false,
-                      );
-                    },
-                    child: const Text(
-                      "Tiếp tục mua hàng",
-                      style: TextStyle(fontSize: 20, color: Colors.white),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 30),
+        child: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(
+                Icons.verified_rounded,
+                size: 120,
+                color: Colors.blue,
+              ),
+              const SizedBox(height: 20),
+              const Text(
+                "CẢM ƠN BẠN ĐÃ MUA HÀNG",
+                style: TextStyle(
+                  fontSize: 24,
+                  color: Colors.blue,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 15),
+              const Text(
+                "Bạn đã đặt hàng thành công",
+                style: TextStyle(
+                  fontSize: 18,
+                  color: Colors.black87,
+                ),
+              ),
+              const SizedBox(height: 20),
+              const Text(
+                "Bạn sẽ sớm nhận được email xác nhận đơn hàng từ chúng tôi.",
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.black54,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 30),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 15),
+                    backgroundColor: Colors.blue,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
                     ),
                   ),
+                  onPressed: () {
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (context) => const PageHome()),
+                          (Route<dynamic> route) => false,
+                    );
+                  },
+                  child: const Text(
+                    "Tiếp tục mua hàng",
+                    style: TextStyle(fontSize: 18, color: Colors.white),
+                  ),
                 ),
-              ],
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            const SizedBox(
-              height: 30,
-            ),
-            const Text(
-              "Bạn cần hỗ trợ, vui lòng liên hệ",
-              style: TextStyle(fontSize: 18, color: Colors.grey),
-            ),
-            const Text(
-              "1900.63.64.67",
-              style: TextStyle(
+              ),
+              const SizedBox(height: 40),
+              const Text(
+                "Bạn cần hỗ trợ? Vui lòng liên hệ",
+                style: TextStyle(fontSize: 16, color: Colors.grey),
+              ),
+              const SizedBox(height: 5),
+              const Text(
+                "1900.63.64.67",
+                style: TextStyle(
                   fontSize: 18,
-                  color: Colors.orange,
-                  fontWeight: FontWeight.bold),
-            )
-          ],
+                  color: Colors.blue,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
