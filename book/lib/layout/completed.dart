@@ -88,7 +88,7 @@ class Completed extends StatelessWidget {
                     );
                   },
                   child: const Text(
-                    "Tiếp tục mua hàng",
+                    "Trang chủ",
                     style: TextStyle(fontSize: 18, color: Colors.white),
                   ),
                 ),
@@ -100,7 +100,7 @@ class Completed extends StatelessWidget {
               ),
               const SizedBox(height: 5),
               const Text(
-                "1900.63.64.67",
+                "0388870504",
                 style: TextStyle(
                   fontSize: 18,
                   color: Colors.blue,

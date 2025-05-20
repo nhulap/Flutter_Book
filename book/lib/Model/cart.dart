@@ -1,4 +1,5 @@
 import 'package:book/Model/book.dart';
+import 'package:book/main.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class CartItem {
@@ -20,18 +21,17 @@ class CartItem {
       'giaBan': book.gia,
       'trangThai': 'đã đặt',
     };
+
   }
 
-// Nếu cần dùng lại thì sửa lại đoạn này đúng với dữ liệu từ bảng Order_items
-/*
   factory CartItem.fromJson(Map<String, dynamic> json) {
     return CartItem(
-      book: Book(id: json['book_id'], ten: "", gia: json['giaBan']),
-      sl: json['soLuongitem'],
-      selected: json['trangThai'] == 'đã đặt',
+      book: Book.fromJson(json["book"]),
+      sl: int.parse(json["sl"]),
+      selected: json["selected"].toLowerCase() == 'true',
     );
   }
-  */
+//
 }
 
 class  CartSnapShot {
@@ -45,7 +45,7 @@ class  CartSnapShot {
       'tinhTien': sum,
       'diaChi': s,
       'ghiChu': note,  // Ghi chú đơn hàng
-      'nguoiNhan': name,            // Thêm tên
+      'nguoiNhan': name,   // Thêm tên
       'phone': phone,   // Thêm số điện thoại
     };
   }
@@ -55,7 +55,6 @@ class  CartSnapShot {
     final supabase = Supabase.instance.client;
     int code = DateTime.now().millisecondsSinceEpoch;
 
-    // Dùng nguyên địa chỉ đã truyền, không cắt
     String addr = address.trim();
 
     // Tính tổng tiền
@@ -84,4 +83,34 @@ class  CartSnapShot {
   }
 
 }
+
+class GioHangSnapshot{
+  static Future<List<CartItem>> getALL(int uuid) async{
+    var response = await supabase.from("GioHang").select("soLuong, Book(*)").eq("id_user", uuid);
+    return response.map((e) => CartItem.fromJson(e),).toList();
+  }
+
+    static Future<void> insert(CartItem gh, int uuid) async{
+    await supabase.from("GioHang").insert({
+      "id_book" :gh.book.id,
+      "id_user": uuid,
+      "soLuong": gh.sl
+    });
+  }
+
+  static Future<void> update(CartItem gh, int uuid) async{
+    await supabase.from("GioHang").upsert({
+      "id_book" :gh.book.id,
+      "id_user": uuid,
+      "soLuong": gh.sl
+    });
+  }
+
+  static Future<void> delete(int idFruit, int uuid) async{
+    await supabase.from("GioHang").delete()
+        .eq("id_book", idFruit)
+        .eq("id_user", uuid);
+  }
+}
+
 

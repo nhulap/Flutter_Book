@@ -1,16 +1,25 @@
+import 'package:book/Controller/user_controller.dart';
 import 'package:book/Model/book.dart';
 import 'package:book/Model/cart.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
 class CartController extends GetxController {
-  final List<CartItem> cart = [];
+  List<CartItem> cart = [];
 
-  String address = ""; // chỉ cần 1 dòng địa chỉ
-  String note = ""; // thêm ghi chú
-  String name = "";     // thêm biến lưu tên
+  String address = "";
+  String note = "";
+  String name = "";
   String phone = "";
   static CartController get controller => Get.find<CartController>();
+
+  @override
+  void onInit() {
+    // TODO: implement onInit
+    super.onInit();
+    UserController userController = Get.find<UserController>();
+    cart = GioHangSnapshot.getALL(userController.userId.value) as List<CartItem>;
+  }
 
   double totalPrice() {
     double total = 0;
@@ -56,10 +65,12 @@ class CartController extends GetxController {
 
 
   void addToCart(Book book, int sum) {
+
     for (var item in cart) {
       if (item.book.id == book.id) {
         item.sl += sum;
         Get.snackbar("Đã thêm vào giỏ hàng", "");
+
         return;
       }
     }

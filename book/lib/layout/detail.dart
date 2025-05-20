@@ -1,6 +1,7 @@
 
 import 'package:book/Controller/book_controller.dart';
 import 'package:book/Controller/cart_controller.dart';
+import 'package:book/Model/cart.dart';
 import 'package:book/layout/cart.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -52,7 +53,6 @@ class _DetailState extends State<Detail> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              /// (1) Thông tin chi tiết như cũ...
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -94,18 +94,16 @@ class _DetailState extends State<Detail> {
                 book.moTa,
                 style: TextStyle(fontSize: 14, color: Colors.black87),
               ),
-
-
               SizedBox(height: 16),
               ElevatedButton(
                 onPressed: () {
-                  final cartController = Get.find<CartController>();
-                  cartController.addToCart(book, 1); // sửa ở đây ✅
+                  // final cartController = Get.find<CartController>();
+                  // cartController.addToCart(book, 1);
+
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text("Đã thêm vào giỏ hàng")),
                   );
                 },
-
                 child: Text("Thêm vào giỏ hàng", style: TextStyle(color: Colors.black)),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue,
@@ -114,13 +112,12 @@ class _DetailState extends State<Detail> {
                   ),
                 ),
               ),
-
               SizedBox(height: 24),
               Text("Các sách cùng loại bạn có thể thích:",
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
               SizedBox(height: 8),
 
-              /// (2) FutureBuilder để hiển thị danh sách sách cùng loại
+              // FutureBuilder để hiển thị danh sách sách cùng loại
               FutureBuilder<List<Book>>(
                 future: futureBooksCungLoai,
                 builder: (context, snapshot) {
@@ -131,7 +128,6 @@ class _DetailState extends State<Detail> {
                   } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                     return Text("Không có sách cùng loại.");
                   }
-
                   final books = snapshot.data!;
                   return Column(
                     children: books.map((b) {

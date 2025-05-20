@@ -72,11 +72,9 @@ class _CheckOrdersState extends State<CheckOrders> {
                           userController.userId.value,
                           controller.address,
                           controller.note,
-                          controller.name,   // lấy từ biến name của CartController
-                          controller.phone,  // lấy từ biến phone của CartController
+                          controller.name,
+                          controller.phone,
                         );
-
-
                         // Xoá giỏ hàng sau khi lưu
                         controller.cart.clear();
                         controller.update(['cart', 'totalPrice']);
@@ -86,7 +84,6 @@ class _CheckOrdersState extends State<CheckOrders> {
                           builder: (context) => const Completed(),
                         ));
                       } catch (e) {
-                        // Xử lý lỗi (hiển thị alert dialog hoặc snackbar)
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(content: Text('Lưu đơn hàng thất bại! Vui lòng thử lại.')),
                         );
@@ -137,7 +134,7 @@ class _CheckOrdersState extends State<CheckOrders> {
                           height: 5,
                           width: 100,
                           child: ColoredBox(
-                            color: Colors.blue,  // đổi sang xanh dương
+                            color: Colors.blue,
                           ),
                         ),
                       ),
@@ -146,7 +143,7 @@ class _CheckOrdersState extends State<CheckOrders> {
                         height: 50,
                         alignment: Alignment.center,
                         decoration: const BoxDecoration(
-                          color: Colors.blue,  // đổi sang xanh dương
+                          color: Colors.blue,
                           shape: BoxShape.circle,
                         ),
                         child: const Icon(
@@ -159,7 +156,7 @@ class _CheckOrdersState extends State<CheckOrders> {
                           height: 5,
                           width: 100,
                           child: ColoredBox(
-                            color: Colors.blue,  // đổi sang xanh dương
+                            color: Colors.blue,
                           ),
                         ),
                       ),
@@ -169,14 +166,14 @@ class _CheckOrdersState extends State<CheckOrders> {
                         alignment: Alignment.center,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          border: Border.all(width: 3, color: Colors.blue),  // đổi sang xanh dương
+                          border: Border.all(width: 3, color: Colors.blue),
                         ),
                         child: const Text(
                           "3",
                           textAlign: TextAlign.center,
                           style: TextStyle(
                               fontSize: 25,
-                              color: Colors.blue,  // đổi sang xanh dương
+                              color: Colors.blue,
                               fontWeight: FontWeight.bold),
                         ),
                       ),
@@ -249,7 +246,7 @@ class _CheckOrdersState extends State<CheckOrders> {
                                     children: [
                                       Text("${item.book.gia} \$",
                                           style: const TextStyle(
-                                              color: Colors.blue, fontSize: 20)),  // đổi màu xanh dương
+                                              color: Colors.blue, fontSize: 20)),
                                     ],
                                   ),
                                   Text("Số lượng: ${item.sl}",

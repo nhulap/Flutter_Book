@@ -85,64 +85,97 @@ class CartPage extends StatelessWidget {
                 id: 'item$index',
                 builder: (_) {
                   return Card(
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: CheckboxListTile(
-                            controlAffinity: ListTileControlAffinity.leading,
-                            title: Image.network(item.book.anh, height: 120),
-                            value: item.selected,
-                            onChanged: (_) => controller.selectedHandle(index),
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          flex: 2,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                    margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+                    elevation: 2,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    child: Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Hình ảnh + Checkbox
+                          Column(
                             children: [
-                              Text(item.book.tenSach),
-                              const SizedBox(height: 8),
-                              Text(
-                                "${item.book.gia} \$",
-                                style: const TextStyle(
-                                  fontSize: 17,
-                                  color: Colors.orangeAccent,
-                                ),
+                              Checkbox(
+                                value: item.selected,
+                                onChanged: (_) => controller.selectedHandle(index),
                               ),
-                              const SizedBox(height: 10),
-                              Row(
-                                children: [
-                                  IconButton(
-                                    onPressed: () {
-                                      controller.increase(index);
-                                      controller.update(['item$index']);
-                                    },
-                                    icon: const Icon(Icons.add_circle_outline),
-                                  ),
-                                  Text("${item.sl}"),
-                                  IconButton(
-                                    onPressed: () {
-                                      controller.decrease(index);
-                                      controller.update(['item$index']);
-                                    },
-                                    icon: const Icon(Icons.remove_circle_outline),
-                                  ),
-                                  IconButton(
-                                    onPressed: () {
-                                      controller.removeItem(item.book);
-                                      controller.update(['cart']);
-                                    },
-                                    icon: const Icon(Icons.delete, size: 30),
-                                  ),
-                                ],
+                              const SizedBox(height: 5),
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(8),
+                                child: Image.network(
+                                  item.book.anh,
+                                  height: 100,
+                                  width: 80,
+                                  fit: BoxFit.cover,
+                                ),
                               ),
                             ],
                           ),
-                        )
-                      ],
+                          const SizedBox(width: 12),
+                          // Thông tin sách + hành động
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  item.book.tenSach,
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  "${item.book.gia} \$",
+                                  style: const TextStyle(
+                                    fontSize: 15,
+                                    color: Colors.orange,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                const SizedBox(height: 12),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    IconButton(
+                                      onPressed: () {
+                                        controller.decrease(index);
+                                        controller.update(['item$index']);
+                                      },
+                                      icon: const Icon(Icons.remove_circle_outline),
+                                    ),
+                                    Text(
+                                      "${item.sl}",
+                                      style: const TextStyle(fontSize: 16),
+                                    ),
+                                    IconButton(
+                                      onPressed: () {
+                                        controller.increase(index);
+                                        controller.update(['item$index']);
+                                      },
+                                      icon: const Icon(Icons.add_circle_outline),
+                                    ),
+                                    const Spacer(),
+                                    IconButton(
+                                      onPressed: () {
+                                        controller.removeItem(item.book);
+                                        controller.update(['cart']);
+                                      },
+                                      icon: const Icon(Icons.delete_outline, color: Colors.red),
+                                    ),
+                                  ],
+                                )
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   );
+
                 },
               );
             },

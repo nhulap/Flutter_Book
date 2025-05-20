@@ -15,7 +15,7 @@ class PaymentConfirmation extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         iconTheme: const IconThemeData(color: Colors.white),
-        backgroundColor: Colors.blue,  // đổi sang màu xanh
+        backgroundColor: Colors.blue,
         title: const Text(
           "Thông tin giao hàng",
           style: TextStyle(
@@ -32,7 +32,7 @@ class PaymentConfirmation extends StatelessWidget {
         padding: const EdgeInsets.all(20),
         child: ElevatedButton(
             style: const ButtonStyle(
-                backgroundColor: MaterialStatePropertyAll(Colors.blue), // đổi sang màu xanh
+                backgroundColor: MaterialStatePropertyAll(Colors.blue),
                 padding: MaterialStatePropertyAll(EdgeInsets.all(10))),
             onPressed: () {
               Navigator.of(context).push(MaterialPageRoute(
@@ -59,7 +59,7 @@ class PaymentConfirmation extends StatelessWidget {
                       height: 50,
                       alignment: Alignment.center,
                       decoration: const BoxDecoration(
-                        color: Colors.blue,  // đổi sang xanh
+                        color: Colors.blue,
                         shape: BoxShape.circle,
                       ),
                       child: const Icon(
@@ -73,7 +73,7 @@ class PaymentConfirmation extends StatelessWidget {
                         height: 5,
                         width: 100,
                         child: ColoredBox(
-                          color: Colors.blue,  // đổi sang xanh
+                          color: Colors.blue,
                         ),
                       ),
                     ),
@@ -82,7 +82,7 @@ class PaymentConfirmation extends StatelessWidget {
                       height: 50,
                       alignment: Alignment.center,
                       decoration: const BoxDecoration(
-                        color: Colors.blue,  // đổi sang xanh
+                        color: Colors.blue,
                         shape: BoxShape.circle,
                       ),
                       child: const Text(
@@ -99,7 +99,7 @@ class PaymentConfirmation extends StatelessWidget {
                         height: 5,
                         width: 100,
                         child: ColoredBox(
-                          color: Colors.blue,  // đổi sang xanh
+                          color: Colors.blue,
                         ),
                       ),
                     ),
@@ -109,14 +109,14 @@ class PaymentConfirmation extends StatelessWidget {
                       alignment: Alignment.center,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        border: Border.all(width: 3, color: Colors.blue),  // đổi sang xanh
+                        border: Border.all(width: 3, color: Colors.blue),
                       ),
                       child: const Text(
                         "3",
                         textAlign: TextAlign.center,
                         style: TextStyle(
                             fontSize: 25,
-                            color: Colors.blue,  // đổi sang xanh
+                            color: Colors.blue,
                             fontWeight: FontWeight.bold),
                       ),
                     ),
@@ -153,7 +153,7 @@ class PaymentConfirmation extends StatelessWidget {
                 ),
               ),
               RadioListTile(
-                fillColor: const MaterialStatePropertyAll(Colors.blue),  // đổi sang xanh
+                fillColor: const MaterialStatePropertyAll(Colors.blue),
                 title: const Text(
                   "Giao hàng tiêu chuẩn: 12",
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
@@ -182,7 +182,7 @@ class PaymentConfirmation extends StatelessWidget {
                 ),
               ),
               RadioListTile(
-                fillColor: const MaterialStatePropertyAll(Colors.blue),  // đổi sang xanh
+                fillColor: const MaterialStatePropertyAll(Colors.blue),
                 title: const Text(
                   "Thanh toán bằng tiền mặt khi nhận hàng",
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
@@ -230,7 +230,7 @@ class PaymentConfirmation extends StatelessWidget {
                   ),
                   Text(
                     "${controller.totalPrice() + (12.00)}",
-                    style: const TextStyle(color: Colors.blue, fontSize: 20),  // đổi sang xanh
+                    style: const TextStyle(color: Colors.blue, fontSize: 20),
                   )
                 ],
               )

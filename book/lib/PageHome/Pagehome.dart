@@ -1,4 +1,5 @@
 import 'package:book/Controller/user_controller.dart';
+import 'package:book/layout/cart.dart';
 import 'package:book/layout/detail.dart';
 import 'package:book/SignInSignUp/signin.dart';
 import 'package:book/SignInSignUp/signup.dart';
@@ -7,7 +8,7 @@ import 'package:book/layout/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import '../Model/book.dart';
-import '../Controller/book_controller.dart'; // Import controller
+import '../Controller/book_controller.dart';
 import 'package:get/get.dart';
 
 class PageHome extends StatefulWidget {
@@ -24,7 +25,7 @@ class _PageHomeState extends State<PageHome> {
     'https://riskmanaged.com.au/wp-content/uploads/2017/10/books_banner_opt.jpg',
   ];
 
-  final Book_Controller bookController = Get.put(Book_Controller()); // Khởi tạo controller
+  final Book_Controller bookController = Get.put(Book_Controller());
   final UserController userController = Get.put(UserController());
 
 
@@ -266,6 +267,15 @@ class _PageHomeState extends State<PageHome> {
             ),
           ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => CartPage(),)
+          );
+        },
+        backgroundColor: Colors.pinkAccent,
+        child: const Icon(Icons.shopping_cart),
       ),
     );
   }

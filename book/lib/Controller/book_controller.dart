@@ -37,14 +37,14 @@ class Book_Controller extends GetxController{
     update();
   }
 
-  // Hàm lấy 6 sản phẩm còn ít nhất trong kho từ Supabase cho sản phẩm ưa thích (best seller)
+  // Hàm lấy 6 sản phẩm còn ít nhất trong kho cho sản phẩm ưa thích best seller
   Future<List<Book>> bestSellerBooks() async {
     final response = await _client
         .from('Book')
         .select()
-        .gte('soLuong', 1)  // Lọc các sản phẩm còn tồn kho ít nhất 1
-        .order('soLuong', ascending: true)  // Sắp xếp theo số lượng tồn kho tăng dần
-        .limit(6);  // Giới hạn 6 sản phẩm
+        .gte('soLuong', 1)
+        .order('soLuong', ascending: true)
+        .limit(6);
 
     return (response as List)
         .map((bookJson) => Book.fromJson(bookJson))
@@ -56,7 +56,7 @@ class Book_Controller extends GetxController{
         .from('Book')
         .select()
         .eq('loaiID', loaiID)
-        .neq('id', bookID); // Không lấy chính quyển sách đang xem
+        .neq('id', bookID);
 
     return (response as List)
         .map((bookJson) => Book.fromJson(bookJson))

@@ -54,7 +54,7 @@ class UserController extends GetxController {
       final orderDetails = await _client
           .from('Order_items')
           .select(
-          'id, soLuongitem, giaBan, trangThai, book(id, tenSach, author, publisher, gia, anh, description)')
+          'id, soLuongitem, giaBan, trangThai, book(id, tenSach, author, publisher, gia, anh, moTa)')
           .eq('order_id', orderId) as List<dynamic>?;
 
       return orderDetails?.map((e) => e as Map<String, dynamic>).toList() ?? [];

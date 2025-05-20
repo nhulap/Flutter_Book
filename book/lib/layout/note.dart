@@ -25,7 +25,7 @@ class Note extends StatelessWidget {
         padding: const EdgeInsets.all(15.0),
         child: ElevatedButton(
             style: const ButtonStyle(
-                backgroundColor: MaterialStatePropertyAll(Colors.blue), // đổi sang màu xanh
+                backgroundColor: MaterialStatePropertyAll(Colors.blue),
                 padding: MaterialStatePropertyAll(EdgeInsets.all(10))),
             onPressed: () {
               // Cập nhật dữ liệu vào controller (chỉ lưu tạm)
@@ -35,8 +35,6 @@ class Note extends StatelessWidget {
                 nameController.text,
                 phoneController.text,
               );
-
-              // Chuyển sang trang Check (chưa gửi dữ liệu lên Supabase)
               Navigator.of(context).push(
                 MaterialPageRoute(builder: (context) => PaymentConfirmation()),
               );
@@ -180,8 +178,8 @@ class Note extends StatelessWidget {
                 controller.addressHandle(
                   addressController.text,
                   noteController.text,
-                  value,                // tên vừa nhập
-                  phoneController.text, // giữ số điện thoại hiện tại
+                  value,
+                  phoneController.text,
                 );
               },
             ),
@@ -195,8 +193,8 @@ class Note extends StatelessWidget {
                 controller.addressHandle(
                   addressController.text,
                   noteController.text,
-                  nameController.text,  // giữ tên hiện tại
-                  value,                // số điện thoại vừa nhập
+                  nameController.text,
+                  value,
                 );
               },
             ),
@@ -217,7 +215,7 @@ class Note extends StatelessWidget {
       TextEditingController controller,
       IconData icon,
       Color mainBlue, {
-        void Function(String)? onChanged,  // thêm callback onChanged tùy chọn
+        void Function(String)? onChanged,
       }) {
     return Container(
       decoration: BoxDecoration(
