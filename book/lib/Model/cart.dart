@@ -13,7 +13,16 @@ class CartItem {
     this.selected = true,
   });
 
-  Map<String, dynamic> toJson(int code) {
+
+  Map<String, dynamic> toJson() {
+    return {
+      'book': book.toJson(),
+      'soLuong': sl,
+      'selected': selected,
+    };
+  }
+
+  Map<String, dynamic> toJsonWithCode(int code) {
     return {
       'order_id': code,
       'book_id': book.id,
@@ -26,91 +35,112 @@ class CartItem {
 
   factory CartItem.fromJson(Map<String, dynamic> json) {
     return CartItem(
-      book: Book.fromJson(json["book"]),
-      sl: int.parse(json["sl"]),
-      selected: json["selected"].toLowerCase() == 'true',
+      book: Book.fromJson(json["Book"]), // viết đúng theo tên bảng Supabase
+      sl: json["soLuong"] ?? 1,
+      selected: true, // không có cột selected trong Supabase nên mặc định true
     );
   }
+
 //
 }
 
-class  CartSnapShot {
-  static Map<String, dynamic> addOrder(
-      double sum, String s, int code, int user, String note,String name,
-      String phone,) {
-    return {
-      'id': code,
-      'user_id': user,
-      'ngayTao': DateTime.now().toIso8601String().split('T')[0],
-      'tinhTien': sum,
-      'diaChi': s,
-      'ghiChu': note,  // Ghi chú đơn hàng
-      'nguoiNhan': name,   // Thêm tên
-      'phone': phone,   // Thêm số điện thoại
-    };
-  }
-  static Future<void> insert(
-      List<CartItem> list, int userId, String address, String note,String name,
-      String phone,) async {
-    final supabase = Supabase.instance.client;
-    int code = DateTime.now().millisecondsSinceEpoch;
+class GioHangSnapshot {
+  static Future<List<CartItem>> getALL(int userId) async {
+    final response = await supabase
+        .from("Cart")
+        .select("soLuong, Book(*)")
+        .eq("user_id", userId);
 
-    String addr = address.trim();
+    return response.map((e) => CartItem.fromJson(e)).toList();
+  }
+
+  static Future<void> insert(CartItem gh, int userId) async {
+    await supabase.from("Cart").insert({
+      "book_id": gh.book.id,
+      "user_id": userId,
+      "soLuong": gh.sl,
+    });
+  }
+
+  static Future<void> update(CartItem gh, int userId) async {
+    await supabase.from("Cart").upsert({
+      "book_id": gh.book.id,
+      "user_id": userId,
+      "soLuong": gh.sl,
+    });
+  }
+
+  static Future<void> delete(int bookId, int userId) async {
+    await supabase
+        .from("Cart")
+        .delete()
+        .eq("book_id", bookId)
+        .eq("user_id", userId);
+  }
+
+  // Hàm tạo đơn hàng từ giỏ hàng
+  static Future<void> createOrderFromCart(
+      int userId,
+      String address,
+      String note,
+      String name,
+      String phone,
+      ) async {
+    final supabase = Supabase.instance.client;
+
+    // Lấy danh sách CartItem hiện tại của user
+    final List<CartItem> cartItems = await getALL(userId);
+
+    if (cartItems.isEmpty) {
+      print('Giỏ hàng rỗng, không thể tạo đơn');
+      return;
+    }
+
+    // Tạo mã đơn hàng
+    int code = DateTime.now().millisecondsSinceEpoch;
 
     // Tính tổng tiền
     double sum = 0;
-    for (CartItem i in list) {
-      sum += i.book.gia * i.sl;
+    for (var item in cartItems) {
+      sum += item.book.gia * item.sl;
     }
-    final dataOrder = CartSnapShot.addOrder(sum, addr, code, userId, note, name, phone);
-    print('Dữ liệu order gửi lên: $dataOrder');
 
-    // Thêm vào bảng Orders
-    await supabase
-        .from("Orders")
-        .insert(CartSnapShot.addOrder(sum, addr, code, userId, note, name, phone))
-        .then((value) => print("Đã thêm order"))
-        .catchError((error) => print("Lỗi thêm order: $error"));
+    // Dữ liệu đơn hàng
+    final dataOrder = {
+      'id': code,
+      'user_id': userId,
+      'ngayTao': DateTime.now().toIso8601String().split('T')[0],
+      'tinhTien': sum,
+      'diaChi': address.trim(),
+      'ghiChu': note.trim(),
+      'nguoiNhan': name.trim(),
+      'phone': phone.trim(),
+    };
 
-    // Thêm từng sản phẩm vào Order_items
-    for (CartItem i in list) {
-      await supabase
-          .from("Order_items")
-          .insert(i.toJson(code))
-          .then((value) => print("Đã thêm order_item"))
-          .catchError((error) => print("Lỗi thêm order_item: $error"));
+    try {
+      // Thêm vào bảng Orders
+      await supabase.from('Orders').insert(dataOrder);
+      print('Đã thêm đơn hàng');
+
+      // Thêm từng sản phẩm vào Order_items
+      for (var item in cartItems) {
+        final orderItemData = {
+          'order_id': code,
+          'book_id': item.book.id,
+          'soLuongitem': item.sl,
+          'giaBan': item.book.gia,
+          'trangThai': 'đã đặt',
+        };
+        await supabase.from('Order_items').insert(orderItemData);
+      }
+      print('Đã thêm các sản phẩm vào đơn hàng');
+
+      // Nếu muốn, xóa hết giỏ hàng sau khi đặt thành công
+      await supabase.from('Cart').delete().eq('user_id', userId);
+      print('Đã xóa giỏ hàng sau khi đặt');
+
+    } catch (e) {
+      print('Lỗi khi tạo đơn hàng: $e');
     }
-  }
-
-}
-
-class GioHangSnapshot{
-  static Future<List<CartItem>> getALL(int uuid) async{
-    var response = await supabase.from("GioHang").select("soLuong, Book(*)").eq("id_user", uuid);
-    return response.map((e) => CartItem.fromJson(e),).toList();
-  }
-
-    static Future<void> insert(CartItem gh, int uuid) async{
-    await supabase.from("GioHang").insert({
-      "id_book" :gh.book.id,
-      "id_user": uuid,
-      "soLuong": gh.sl
-    });
-  }
-
-  static Future<void> update(CartItem gh, int uuid) async{
-    await supabase.from("GioHang").upsert({
-      "id_book" :gh.book.id,
-      "id_user": uuid,
-      "soLuong": gh.sl
-    });
-  }
-
-  static Future<void> delete(int idFruit, int uuid) async{
-    await supabase.from("GioHang").delete()
-        .eq("id_book", idFruit)
-        .eq("id_user", uuid);
   }
 }
-
-

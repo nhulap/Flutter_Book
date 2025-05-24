@@ -27,18 +27,17 @@ class Note extends StatelessWidget {
             style: const ButtonStyle(
                 backgroundColor: MaterialStatePropertyAll(Colors.blue),
                 padding: MaterialStatePropertyAll(EdgeInsets.all(10))),
-            onPressed: () {
-              // Cập nhật dữ liệu vào controller (chỉ lưu tạm)
-              controller.addressHandle(
-                addressController.text,
-                noteController.text,
-                nameController.text,
-                phoneController.text,
-              );
+            onPressed: () async {
+              controller.name = nameController.text;
+              controller.phone = phoneController.text;
+              controller.address = addressController.text;
+              controller.note = noteController.text;
               Navigator.of(context).push(
                 MaterialPageRoute(builder: (context) => PaymentConfirmation()),
               );
             },
+
+
             child: const Text(
               "Thanh toán",
               style: TextStyle(color: Colors.white, fontSize: 25),
@@ -175,13 +174,12 @@ class Note extends StatelessWidget {
               Icons.person,
               mainBlue,
               onChanged: (value) {
-                controller.addressHandle(
-                  addressController.text,
-                  noteController.text,
-                  value,
-                  phoneController.text,
-                );
+                controller.name = nameController.text;
+                controller.phone = phoneController.text;
+                controller.address = addressController.text;
+                controller.note = noteController.text;
               },
+
             ),
             const SizedBox(height: 15),
             buildInputField(
@@ -190,12 +188,10 @@ class Note extends StatelessWidget {
               Icons.phone,
               mainBlue,
               onChanged: (value) {
-                controller.addressHandle(
-                  addressController.text,
-                  noteController.text,
-                  nameController.text,
-                  value,
-                );
+                controller.name = nameController.text;
+                controller.phone = phoneController.text;
+                controller.address = addressController.text;
+                controller.note = noteController.text;
               },
             ),
             const SizedBox(height: 15),

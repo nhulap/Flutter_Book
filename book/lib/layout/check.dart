@@ -67,8 +67,7 @@ class _CheckOrdersState extends State<CheckOrders> {
                         MaterialStatePropertyAll(Colors.blue)),  // đổi sang xanh dương
                     onPressed: () async {
                       try {
-                        await CartSnapShot.insert(
-                          selectedItems,
+                        await GioHangSnapshot.createOrderFromCart(
                           userController.userId.value,
                           controller.address,
                           controller.note,
@@ -78,7 +77,6 @@ class _CheckOrdersState extends State<CheckOrders> {
                         // Xoá giỏ hàng sau khi lưu
                         controller.cart.clear();
                         controller.update(['cart', 'totalPrice']);
-
                         // Điều hướng sang trang Completed
                         Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) => const Completed(),
@@ -89,6 +87,7 @@ class _CheckOrdersState extends State<CheckOrders> {
                         );
                       }
                     },
+
 
                     child: const Text(
                       "Xác nhận đơn hàng",

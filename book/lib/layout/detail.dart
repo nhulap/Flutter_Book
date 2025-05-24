@@ -3,6 +3,7 @@ import 'package:book/Controller/book_controller.dart';
 import 'package:book/Controller/cart_controller.dart';
 import 'package:book/Model/cart.dart';
 import 'package:book/layout/cart.dart';
+import 'package:book/layout/cart_test.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -96,14 +97,21 @@ class _DetailState extends State<Detail> {
               ),
               SizedBox(height: 16),
               ElevatedButton(
-                onPressed: () {
-                  // final cartController = Get.find<CartController>();
-                  // cartController.addToCart(book, 1);
-
+                // onPressed: () {
+                //   final cartController = Get.find<CartController>();
+                //   cartController.addToCart(book, 1);
+                //   ScaffoldMessenger.of(context).showSnackBar(
+                //     SnackBar(content: Text("Đã thêm vào giỏ hàng")),
+                //   );
+                // },
+                onPressed: () async {
+                  final cartController = Get.find<CartController>();
+                  await cartController.addToCart(book, 1);
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text("Đã thêm vào giỏ hàng")),
                   );
                 },
+
                 child: Text("Thêm vào giỏ hàng", style: TextStyle(color: Colors.black)),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue,
@@ -162,7 +170,7 @@ class _DetailState extends State<Detail> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(context,
-              MaterialPageRoute(builder: (context) => CartPage(),)
+              MaterialPageRoute(builder: (context) => PageGioHang(),)
           );
         },
         backgroundColor: Colors.pinkAccent,

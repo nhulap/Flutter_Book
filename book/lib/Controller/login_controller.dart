@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../PageHome/pagehome.dart';
 import 'user_controller.dart';
+import 'package:book/Controller/cart_controller.dart';
 
 class Login_Controller extends GetxController {
   final supabase = Supabase.instance.client;
@@ -20,7 +21,7 @@ class Login_Controller extends GetxController {
 
     try {
       final loginUser = await supabase
-          .from('User') // đảm bảo bảng đúng tên
+          .from('User')
           .select()
           .eq('nickname', nickname)
           .eq('password', password)
@@ -30,10 +31,17 @@ class Login_Controller extends GetxController {
 
       if (loginUser != null) {
         final id = loginUser['id'];
+        //  Cập nhật userId
         Get.find<UserController>().setUser(id);
+        // Merge local cart vào Supabase
+        final cartController = CartController.controller;
+        await cartController.mergeLocalCartToSupabase(id);
+        //  Load lại giỏ hàng từ Supabase
+        await cartController.loadCartItems();
         if (Get.context != null) {
           Get.snackbar('Thành công', 'Đăng nhập thành công');
         }
+        // Điều hướng về trang chủ
         Get.off(() => const PageHome());
       } else {
         if (Get.context != null) {
