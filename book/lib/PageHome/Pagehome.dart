@@ -1,5 +1,8 @@
+import 'package:book/Controller/cart_controller.dart';
 import 'package:book/Controller/user_controller.dart';
+import 'package:book/common/Common.dart';
 import 'package:book/layout/cart.dart';
+import 'package:book/layout/cart_test.dart';
 import 'package:book/layout/detail.dart';
 import 'package:book/SignInSignUp/signin.dart';
 import 'package:book/SignInSignUp/signup.dart';
@@ -7,6 +10,7 @@ import 'package:book/layout/menu.dart';
 import 'package:book/layout/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:supabase_auth_ui/supabase_auth_ui.dart';
 import '../Model/book.dart';
 import '../Controller/book_controller.dart';
 import 'package:get/get.dart';
@@ -27,6 +31,7 @@ class _PageHomeState extends State<PageHome> {
 
   final Book_Controller bookController = Get.put(Book_Controller());
   final UserController userController = Get.put(UserController());
+  final CartController cartController = Get.put(CartController());
 
 
   @override
@@ -270,8 +275,17 @@ class _PageHomeState extends State<PageHome> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
+          AuthResponse? res = Common.response;
+          if (res == null) {
+            Navigator.of(context).push(
+              MaterialPageRoute(builder: (context) => LoginPage(),)
+            );
+            return;
+          }
+
+          cartController.auth(res);
           Navigator.push(context,
-              MaterialPageRoute(builder: (context) => CartPage(),)
+              MaterialPageRoute(builder: (context) => PageGioHang(),)
           );
         },
         backgroundColor: Colors.pinkAccent,

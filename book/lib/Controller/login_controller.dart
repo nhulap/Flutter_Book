@@ -35,7 +35,7 @@ class Login_Controller extends GetxController {
         Get.find<UserController>().setUser(id);
         // Merge local cart vào Supabase
         final cartController = CartController.controller;
-        await cartController.mergeLocalCartToSupabase(id);
+        //await cartController.mergeLocalCartToSupabase(id);
         //  Load lại giỏ hàng từ Supabase
         await cartController.loadCartItems();
         if (Get.context != null) {

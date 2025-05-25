@@ -2,10 +2,13 @@
 import 'package:book/Controller/book_controller.dart';
 import 'package:book/Controller/cart_controller.dart';
 import 'package:book/Model/cart.dart';
+import 'package:book/SignInSignUp/signin.dart';
+import 'package:book/common/Common.dart';
 import 'package:book/layout/cart.dart';
 import 'package:book/layout/cart_test.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get/get_connect/http/src/interceptors/get_modifiers.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../Model/book.dart';
@@ -34,6 +37,7 @@ class Detail extends StatefulWidget {
 class _DetailState extends State<Detail> {
   late Future<List<Book>> futureBooksCungLoai;
   final Book_Controller bookController = Get.put(Book_Controller());
+  final CartController cartController = Get.put(CartController());
 
   @override
   void initState() {
@@ -105,8 +109,18 @@ class _DetailState extends State<Detail> {
                 //   );
                 // },
                 onPressed: () async {
-                  final cartController = Get.find<CartController>();
-                  await cartController.addToCart(book, 1);
+                  // final cartController = Get.find<CartController>();
+                  // await cartController.addToCart(book, 1);
+                  AuthResponse? res = Common.response;
+                  if (res == null) {
+                    Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) => LoginPage(),)
+                    );
+                    return;
+                  }
+                  cartController.auth(res);
+                  await cartController.addToCart(book, res);
+
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text("Đã thêm vào giỏ hàng")),
                   );
@@ -169,6 +183,15 @@ class _DetailState extends State<Detail> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
+          AuthResponse? res = Common.response;
+          if (res == null) {
+            Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => LoginPage(),)
+            );
+            return;
+          }
+
+          cartController.auth(res);
           Navigator.push(context,
               MaterialPageRoute(builder: (context) => PageGioHang(),)
           );

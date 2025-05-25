@@ -67,13 +67,13 @@ class _CheckOrdersState extends State<CheckOrders> {
                         MaterialStatePropertyAll(Colors.blue)),  // đổi sang xanh dương
                     onPressed: () async {
                       try {
-                        await GioHangSnapshot.createOrderFromCart(
-                          userController.userId.value,
-                          controller.address,
-                          controller.note,
-                          controller.name,
-                          controller.phone,
-                        );
+                        // await GioHangSnapshot.createOrderFromCart(
+                        //   userController.userId.value,
+                        //   controller.address,
+                        //   controller.note,
+                        //   controller.name,
+                        //   controller.phone,
+                        // );
                         // Xoá giỏ hàng sau khi lưu
                         controller.cart.clear();
                         controller.update(['cart', 'totalPrice']);

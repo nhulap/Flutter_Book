@@ -1,6 +1,11 @@
 import 'package:book/Controller/login_controller.dart';
+import 'package:book/PageHome/pagehome.dart';
+import 'package:book/common/Common.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:supabase_auth_ui/supabase_auth_ui.dart';
+
+AuthResponse? response;
 
 class LoginPage extends StatelessWidget {
   final Login_Controller loginController = Get.put(Login_Controller());
@@ -16,35 +21,25 @@ class LoginPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text("Đăng Nhập"),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(10.0),
+      body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            TextField(
-              controller: usernameController,
-              decoration: const InputDecoration(
-                  labelText: "Tài khoản", border: OutlineInputBorder()),
+            Expanded(
+              child: Container(),
             ),
-            const SizedBox(height: 20),
-            TextField(
-              controller: passwordController,
-              decoration: const InputDecoration(
-                  labelText: "Mật khẩu", border: OutlineInputBorder()),
-              obscureText: true,
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                print("Đang thực hiện đăng nhập...");
-                loginController.login(
-                  usernameController.text,
-                  passwordController.text,
-                );
+            SupaEmailAuth(
+              onSignInComplete: (res) {
+                Common.response = res;
+                Get.to(() =>  PageHome());
               },
-              child: const Text("Đăng Nhập"),
-            ),
+              onSignUpComplete: (response) {
 
+              },
+              showConfirmPasswordField: true,
+            ),
+            Expanded(
+              child: Container(),
+            ),
           ],
         ),
       ),

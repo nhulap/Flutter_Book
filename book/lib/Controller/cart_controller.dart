@@ -8,7 +8,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 class CartController extends GetxController {
   final box = GetStorage();
   final SupabaseClient _client = Supabase.instance.client;
-
+  List<CartItem> ghsp = [];
   List<CartItem> cart = []; // Giỏ hàng tạm khi chưa đăng nhập
   String address = "";
   String note = "";
@@ -17,6 +17,20 @@ class CartController extends GetxController {
 
   static CartController get controller => Get.find<CartController>();
   int get userId => Get.find<UserController>().userId.value;
+
+  void auth(AuthResponse? response){
+    if(response != null)
+      getAll_GH(response.user!.id);
+    else{
+      ghsp =[];
+      update(["gh"]);
+    }
+  }
+
+  getAll_GH(String uuid) async{
+    ghsp = await GioHangSnapshot.getALL(uuid);
+    update(["gh"]);
+  }
 
   @override
   void onInit() {
@@ -52,20 +66,20 @@ class CartController extends GetxController {
     Get.snackbar("Đã thêm vào giỏ hàng tạm", "");
   }
 
-  Future<void> mergeLocalCartToSupabase(int userId) async {
-    final existingCartItems = await GioHangSnapshot.getALL(userId);
-    for (var item in cart) {
-      final existing = existingCartItems.firstWhereOrNull(
-              (e) => e.book.id == item.book.id);
-      if (existing != null) {
-        existing.sl += item.sl;
-        await GioHangSnapshot.update(existing, userId);
-      } else {
-        await GioHangSnapshot.insert(item, userId);
-      }
-    }
-    cart.clear();
-  }
+  // Future<void> mergeLocalCartToSupabase(int userId) async {
+  //   final existingCartItems = await GioHangSnapshot.getALL(userId);
+  //   for (var item in cart) {
+  //     final existing = existingCartItems.firstWhereOrNull(
+  //             (e) => e.book.id == item.book.id);
+  //     if (existing != null) {
+  //       existing.sl += item.sl;
+  //       await GioHangSnapshot.update(existing, userId);
+  //     } else {
+  //       await GioHangSnapshot.insert(item, userId);
+  //     }
+  //   }
+  //   cart.clear();
+  // }
 
   // giỏ hàng trong supabase
   Future<void> loadCartItems() async {
@@ -88,40 +102,54 @@ class CartController extends GetxController {
   }
 
   Future<void> loadCartFromSupabase(int userId) async {
-    final List<CartItem> fetchedCart = await GioHangSnapshot.getALL(userId);
-    cart.clear();
-    cart.addAll(fetchedCart);
-    update(['cart']);
+    // final List<CartItem> fetchedCart = await GioHangSnapshot.getALL(userId);
+    // cart.clear();
+    // cart.addAll(fetchedCart);
+    // update(['cart']);
   }
 
-  Future<void> addToCart(Book book, int sl) async {
-    if (userId == 0) {
-      addToLocalCart(book, sl);
-      update(['cart', 'totalPrice']);
-      return;
-    }
+  Future<void> addToCart(Book book, AuthResponse auth) async {
 
-    final existingIndex = cart.indexWhere((item) => item.book.id == book.id);
-    try {
-      if (existingIndex != -1) {
-        final newQuantity = cart[existingIndex].sl + sl;
-        await _client
-            .from('Cart')
-            .update({'soLuong': newQuantity})
-            .eq('user_id', userId)
-            .eq('book_id', book.id);
-      } else {
-        await _client.from('Cart').insert({
-          'user_id': userId,
-          'book_id': book.id,
-          'soLuong': sl,
-        });
+    CartItem cartItem = CartItem(book: book);
+    for (var item in ghsp) {
+      if (item.book.id == cartItem.book.id) {
+        item.sl++;
+        await GioHangSnapshot.delete(item.book.id, auth.user!.id);
+        await GioHangSnapshot.update(item, auth.user!.id);
+        update(["gh"]);
+        return;
       }
-      await loadCartItems();
-    } catch (e) {
-      print('Lỗi thêm/sửa sản phẩm vào giỏ hàng: $e');
     }
-    update(['cart', 'totalPrice']);
+    ghsp.add(cartItem);
+    await GioHangSnapshot.insert(cartItem, auth.user!.id);
+    update(["gh"]);
+    // if (userId == 0) {
+    //   addToLocalCart(book, sl);
+    //   update(['cart', 'totalPrice']);
+    //   return;
+    // }
+    //
+    // final existingIndex = cart.indexWhere((item) => item.book.id == book.id);
+    // try {
+    //   if (existingIndex != -1) {
+    //     final newQuantity = cart[existingIndex].sl + sl;
+    //     await _client
+    //         .from('Cart')
+    //         .update({'soLuong': newQuantity})
+    //         .eq('user_id', userId)
+    //         .eq('book_id', book.id);
+    //   } else {
+    //     await _client.from('Cart').insert({
+    //       'user_id': userId,
+    //       'book_id': book.id,
+    //       'soLuong': sl,
+    //     });
+    //   }
+    //   await loadCartItems();
+    // } catch (e) {
+    //   print('Lỗi thêm/sửa sản phẩm vào giỏ hàng: $e');
+    // }
+    // update(['cart', 'totalPrice']);
   }
 
   Future<void> removeSelectedItems() async {
@@ -150,7 +178,7 @@ class CartController extends GetxController {
 
   Future<void> removeItem(Book book) async {
     try {
-      await GioHangSnapshot.delete(book.id, userId);
+      // await GioHangSnapshot.delete(book.id, userId);
       cart.removeWhere((item) => item.book.id == book.id);
       update(['cart', 'totalPrice']);
     } catch (e) {
@@ -195,7 +223,7 @@ class CartController extends GetxController {
 
   double totalPrice() {
     double total = 0;
-    for (var item in cart) {
+    for (var item in ghsp) {
       if (item.selected) {
         total += item.book.gia * item.sl;
       }

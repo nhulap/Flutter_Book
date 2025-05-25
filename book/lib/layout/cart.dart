@@ -74,7 +74,7 @@ class CartPage extends StatelessWidget {
         ),
       ),
       body: GetBuilder<CartController>(
-        id: 'cart', // dùng ID chung để rebuild toàn bộ
+        id: 'gh', // dùng ID chung để rebuild toàn bộ
         builder: (controller) {
           return ListView.builder(
             padding: const EdgeInsets.all(8.0),

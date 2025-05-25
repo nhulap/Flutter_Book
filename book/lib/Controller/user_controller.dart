@@ -63,6 +63,7 @@ class UserController extends GetxController {
     }
   }
 
+  //quang ly trang thai
   Future<void> updateState(int orderItemId, String newState) async {
     try {
       await _client
@@ -74,6 +75,7 @@ class UserController extends GetxController {
     }
   }
 
+  //chinh sua trang profile
   Future<void> updateUser(ModelUser user) async {
     try {
       await _client

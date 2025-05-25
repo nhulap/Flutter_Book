@@ -30,12 +30,11 @@ class CartItem {
       'giaBan': book.gia,
       'trangThai': 'đã đặt',
     };
-
   }
 
   factory CartItem.fromJson(Map<String, dynamic> json) {
     return CartItem(
-      book: Book.fromJson(json["Book"]), // viết đúng theo tên bảng Supabase
+      book: Book.fromJson(json["Book"]),
       sl: json["soLuong"] ?? 1,
       selected: true, // không có cột selected trong Supabase nên mặc định true
     );
@@ -45,7 +44,7 @@ class CartItem {
 }
 
 class GioHangSnapshot {
-  static Future<List<CartItem>> getALL(int userId) async {
+  static Future<List<CartItem>> getALL(String userId) async {
     final response = await supabase
         .from("Cart")
         .select("soLuong, Book(*)")
@@ -54,7 +53,7 @@ class GioHangSnapshot {
     return response.map((e) => CartItem.fromJson(e)).toList();
   }
 
-  static Future<void> insert(CartItem gh, int userId) async {
+  static Future<void> insert(CartItem gh, String userId) async {
     await supabase.from("Cart").insert({
       "book_id": gh.book.id,
       "user_id": userId,
@@ -62,7 +61,7 @@ class GioHangSnapshot {
     });
   }
 
-  static Future<void> update(CartItem gh, int userId) async {
+  static Future<void> update(CartItem gh, String userId) async {
     await supabase.from("Cart").upsert({
       "book_id": gh.book.id,
       "user_id": userId,
@@ -70,7 +69,7 @@ class GioHangSnapshot {
     });
   }
 
-  static Future<void> delete(int bookId, int userId) async {
+  static Future<void> delete(int bookId, String userId) async {
     await supabase
         .from("Cart")
         .delete()
@@ -80,7 +79,7 @@ class GioHangSnapshot {
 
   // Hàm tạo đơn hàng từ giỏ hàng
   static Future<void> createOrderFromCart(
-      int userId,
+      String userId,
       String address,
       String note,
       String name,
