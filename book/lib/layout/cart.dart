@@ -161,8 +161,8 @@ class CartPage extends StatelessWidget {
                                     const Spacer(),
                                     IconButton(
                                       onPressed: () {
-                                        controller.removeItem(item.book);
-                                        controller.update(['cart']);
+                                        // controller.removeItem(item.book);
+                                        // controller.update(['cart']);
                                       },
                                       icon: const Icon(Icons.delete_outline, color: Colors.red),
                                     ),

@@ -118,7 +118,7 @@ class _DetailState extends State<Detail> {
                     );
                     return;
                   }
-                  cartController.auth(res);
+                  // cartController.auth(res);
                   await cartController.addToCart(book, res);
 
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -191,10 +191,7 @@ class _DetailState extends State<Detail> {
             return;
           }
 
-          cartController.auth(res);
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => PageGioHang(),)
-          );
+          Get.to(PageGioHang());
         },
         backgroundColor: Colors.pinkAccent,
         child: const Icon(Icons.shopping_cart),

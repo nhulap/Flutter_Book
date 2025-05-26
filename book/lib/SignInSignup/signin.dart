@@ -1,3 +1,4 @@
+import 'package:book/Controller/cart_controller.dart';
 import 'package:book/Controller/login_controller.dart';
 import 'package:book/PageHome/pagehome.dart';
 import 'package:book/common/Common.dart';
@@ -12,6 +13,7 @@ class LoginPage extends StatelessWidget {
 
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final CartController cartController = Get.put(CartController());
 
   LoginPage({super.key});
 
@@ -30,6 +32,7 @@ class LoginPage extends StatelessWidget {
             SupaEmailAuth(
               onSignInComplete: (res) {
                 Common.response = res;
+                cartController.auth(Common.response);
                 Get.to(() =>  PageHome());
               },
               onSignUpComplete: (response) {

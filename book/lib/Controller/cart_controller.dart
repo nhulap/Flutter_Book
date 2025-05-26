@@ -1,6 +1,7 @@
 import 'package:book/Controller/user_controller.dart';
 import 'package:book/Model/book.dart';
 import 'package:book/Model/cart.dart';
+import 'package:book/common/Common.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -33,12 +34,12 @@ class CartController extends GetxController {
   }
 
   @override
-  void onInit() {
+  void onInit() async {
     super.onInit();
-    if (userId == 0) {
-      loadLocalCart();
-    } else {
-      loadCartItems();
+    AuthResponse? res = Common.response;
+
+    if (res != null) {
+      ghsp = await GioHangSnapshot.getALL(res.user!.id);
     }
   }
 
@@ -116,13 +117,11 @@ class CartController extends GetxController {
         item.sl++;
         await GioHangSnapshot.delete(item.book.id, auth.user!.id);
         await GioHangSnapshot.update(item, auth.user!.id);
-        update(["gh"]);
         return;
       }
     }
     ghsp.add(cartItem);
     await GioHangSnapshot.insert(cartItem, auth.user!.id);
-    update(["gh"]);
     // if (userId == 0) {
     //   addToLocalCart(book, sl);
     //   update(['cart', 'totalPrice']);
@@ -176,14 +175,12 @@ class CartController extends GetxController {
     });
   }
 
-  Future<void> removeItem(Book book) async {
-    try {
-      // await GioHangSnapshot.delete(book.id, userId);
-      cart.removeWhere((item) => item.book.id == book.id);
-      update(['cart', 'totalPrice']);
-    } catch (e) {
-      Get.snackbar('Lỗi', 'Không thể xóa sản phẩm: $e');
-    }
+  Future<void> removeItem(int idBook) async {
+    AuthResponse res = Common.response!;
+    ghsp.removeWhere((element) => element.book.id == idBook,);
+    await GioHangSnapshot.delete(idBook, res.user!.id);
+
+    update(["gh", "totalPrice"]);
   }
 
   // chức năng trong giỏ hàng
@@ -207,17 +204,27 @@ class CartController extends GetxController {
     update(['item$index', 'totalPrice', 'cart']);
   }
 
-  Future<void> increase(int index) async {
-    cart[index].sl++;
-    await updateQuantity(index, cart[index].sl);
-    update(['item$index', 'totalPrice']);
+  Future<void> increase(int idBook) async {
+    AuthResponse res = Common.response!;
+    CartItem item = ghsp.firstWhere((element) => element.book.id == idBook,);
+    item.sl++;
+
+    await GioHangSnapshot.delete(item.book.id, res.user!.id);
+    await GioHangSnapshot.update(item, res.user!.id);
+
+    update(["gh", "totalPrice"]);
   }
 
-  Future<void> decrease(int index) async {
-    if (cart[index].sl > 1) {
-      cart[index].sl--;
-      await updateQuantity(index, cart[index].sl);
-      update(['item$index', 'totalPrice']);
+  Future<void> decrease(int idBook) async {
+    AuthResponse res = Common.response!;
+    CartItem item = ghsp.firstWhere((element) => element.book.id == idBook,);
+
+    if (item.sl > 1) {
+      item.sl--;
+      await GioHangSnapshot.delete(item.book.id, res.user!.id);
+      await GioHangSnapshot.update(item, res.user!.id);
+
+      update(["gh", "totalPrice"]);
     }
   }
 

@@ -40,6 +40,7 @@ dependencies:
   carousel_slider: ^5.0.0
   get_storage: ^2.1.1
   supabase_auth_ui: ^0.5.5
+  intl: ^0.18.1
 dev_dependencies:
   flutter_test:
     sdk: flutter

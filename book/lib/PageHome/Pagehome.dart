@@ -10,6 +10,7 @@ import 'package:book/layout/menu.dart';
 import 'package:book/layout/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:intl/intl.dart';
 import 'package:supabase_auth_ui/supabase_auth_ui.dart';
 import '../Model/book.dart';
 import '../Controller/book_controller.dart';
@@ -36,15 +37,15 @@ class _PageHomeState extends State<PageHome> {
 
   @override
   Widget build(BuildContext context) {
+    AuthResponse? res = Common.response;
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: const Text("Trang Chủ"),
         actions: [
-          Obx(() {
-            if (!userController.isLoggedIn.value) {
+            res == null ?
               // Chưa đăng nhập: hiện Sign In + Sign Up
-              return Row(
+              Row(
                 children: [
                   TextButton(
                     style: TextButton.styleFrom(
@@ -78,10 +79,10 @@ class _PageHomeState extends State<PageHome> {
                     child: const Text('Sign Up'),
                   ),
                 ],
-              );
-            } else {
+              )
+            :
               // Đã đăng nhập: hiện nút Profile và Sign Out
-              return Row(
+              Row(
                 children: [
                   IconButton(
                     icon: const Icon(Icons.account_circle, color: Colors.red, size: 28),
@@ -105,7 +106,10 @@ class _PageHomeState extends State<PageHome> {
                       ),
                     ),
                     onPressed: () {
-                      userController.clearUser();
+                      setState(() {
+                        Common.response = null;
+                      });
+
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(content: Text('Đã đăng xuất')),
                       );
@@ -113,9 +117,9 @@ class _PageHomeState extends State<PageHome> {
                     child: const Text('Sign Out'),
                   ),
                 ],
-              );
-            }
-          }),
+              )
+
+
         ],
 
 
@@ -219,6 +223,7 @@ class _PageHomeState extends State<PageHome> {
                         childAspectRatio: 0.6,
                       ),
                       itemBuilder: (context, index) {
+                        final currencyFormat = NumberFormat.currency(locale: 'vi_VN', symbol: 'đ');
                         final book = books[index];
                         return GestureDetector(
                           onTap: () {
@@ -257,7 +262,7 @@ class _PageHomeState extends State<PageHome> {
                               ),
                               const SizedBox(height: 4),
                               Text(
-                                "${book.gia} VND",
+                                currencyFormat.format(book.gia),
                                 textAlign: TextAlign.center,
                                 style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
                               ),
@@ -283,7 +288,6 @@ class _PageHomeState extends State<PageHome> {
             return;
           }
 
-          cartController.auth(res);
           Navigator.push(context,
               MaterialPageRoute(builder: (context) => PageGioHang(),)
           );

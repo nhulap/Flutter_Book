@@ -8,6 +8,7 @@ import 'package:book/layout/note.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:supabase_auth_ui/supabase_auth_ui.dart';
+import 'package:intl/intl.dart';
 
 
 class PageGioHang extends StatefulWidget {
@@ -18,7 +19,8 @@ class PageGioHang extends StatefulWidget {
 }
 
 class _PageGioHangState extends State<PageGioHang> {
-  final cartController = Get.find<CartController>();
+  // final cartController = Get.find<CartController>();
+  final cartController = Get.put(CartController());
   final userController = Get.find<UserController>();
 
   Future<void>? _cartFuture;
@@ -26,15 +28,15 @@ class _PageGioHangState extends State<PageGioHang> {
   @override
   void initState() {
     super.initState();
-    final userId = userController.userId.value;
-
-    if (userId == 0) {
-      cartController.loadLocalCart();
-      cartController.update(['cart']);
-      _cartFuture = Future.value();
-    } else {
-      _cartFuture = cartController.loadCartFromSupabase(userId);
-    }
+    // final userId = userController.userId.value;
+    //
+    // if (userId == 0) {
+    //   cartController.loadLocalCart();
+    //   cartController.update(['cart']);
+    //   _cartFuture = Future.value();
+    // } else {
+    //   _cartFuture = cartController.loadCartFromSupabase(userId);
+    // }
   }
 
 
@@ -59,13 +61,17 @@ class _PageGioHangState extends State<PageGioHang> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text("Thành tiền"),
+                    const Text(
+                      "Thành tiền",
+                      style: TextStyle(fontSize: 15),),
                     GetBuilder<CartController>(
                       id: 'totalPrice',
+                      init: cartController,
                       builder: (controller) {
+                        final currencyFormat = NumberFormat.currency(locale: 'vi_VN', symbol: 'đ');
                         return Text(
-                          "${controller.totalPrice().toStringAsFixed(2)} \$",
-                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                          currencyFormat.format(controller.totalPrice()),
+                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: Colors.red),
                         );
                       },
                     ),
@@ -82,6 +88,18 @@ class _PageGioHangState extends State<PageGioHang> {
                   }
                     Get.to(() =>  Note());
                 },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.deepOrangeAccent,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  textStyle: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
                 child: const Text("Thanh toán"),
               ),
             ),
@@ -90,9 +108,9 @@ class _PageGioHangState extends State<PageGioHang> {
       ),
       body: GetBuilder<CartController>(
         id: "gh",
-        init: cartController,
         builder: (controller) {
           AuthResponse response = Common.response!;
+
           return FutureBuilder<List<CartItem>>(
             future: GioHangSnapshot.getALL(response.user!.id),
             builder: (context, snapshot) {
@@ -115,7 +133,9 @@ class _PageGioHangState extends State<PageGioHang> {
                     final item = data[index];
                     return GetBuilder<CartController>(
                       id: 'item$index',
-                      builder: (_) {
+                      init: cartController,
+                      builder: (controller1) {
+                        final currencyFormat = NumberFormat.currency(locale: 'vi_VN', symbol: 'đ');
                         return Card(
                           margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
                           elevation: 2,
@@ -128,10 +148,10 @@ class _PageGioHangState extends State<PageGioHang> {
                                 // Hình ảnh + Checkbox
                                 Column(
                                   children: [
-                                    Checkbox(
-                                      value: item.selected,
-                                      onChanged: (_) => controller.selectedHandle(index),
-                                    ),
+                                    // Checkbox(
+                                    //   value: item.selected,
+                                    //   onChanged: (_) => controller1.selectedHandle(index),
+                                    // ),
                                     const SizedBox(height: 5),
                                     ClipRRect(
                                       borderRadius: BorderRadius.circular(8),
@@ -161,7 +181,7 @@ class _PageGioHangState extends State<PageGioHang> {
                                       ),
                                       const SizedBox(height: 8),
                                       Text(
-                                        "${item.book.gia} \$",
+                                        currencyFormat.format(item.book.gia),
                                         style: const TextStyle(
                                           fontSize: 15,
                                           color: Colors.orange,
@@ -173,9 +193,8 @@ class _PageGioHangState extends State<PageGioHang> {
                                         mainAxisAlignment: MainAxisAlignment.start,
                                         children: [
                                           IconButton(
-                                            onPressed: () {
-                                              controller.decrease(index);
-                                              controller.update(['item$index']);
+                                            onPressed: () async {
+                                              await controller1.decrease(item.book.id);
                                             },
                                             icon: const Icon(Icons.remove_circle_outline),
                                           ),
@@ -184,17 +203,37 @@ class _PageGioHangState extends State<PageGioHang> {
                                             style: const TextStyle(fontSize: 16),
                                           ),
                                           IconButton(
-                                            onPressed: () {
-                                              controller.increase(index);
-                                              controller.update(['item$index']);
+                                            onPressed: () async {
+                                              await controller1.increase(item.book.id);
                                             },
                                             icon: const Icon(Icons.add_circle_outline),
                                           ),
                                           const Spacer(),
                                           IconButton(
                                             onPressed: () {
-                                              controller.removeItem(item.book);
-                                              controller.update(['cart']);
+                                              showDialog(
+                                                context: context,
+                                                builder: (context) => AlertDialog(
+                                                  title: const Text("Xác nhận xoá"),
+                                                  content: Text("Bạn có chắc chắn muốn xoá '${item.book.tenSach}' khỏi giỏ hàng không?"),
+                                                  actions: [
+                                                    TextButton(
+                                                      onPressed: () => Navigator.pop(context),
+                                                      child: const Text("Huỷ"),
+                                                    ),
+                                                    TextButton(
+                                                      onPressed: () async {
+                                                        Navigator.pop(context);
+                                                        await controller1.removeItem(item.book.id);
+                                                      },
+                                                      child: const Text(
+                                                        "Xoá",
+                                                        style: TextStyle(color: Colors.red),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              );
                                             },
                                             icon: const Icon(Icons.delete_outline, color: Colors.red),
                                           ),

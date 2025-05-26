@@ -1,6 +1,11 @@
+import 'package:book/SignInSignUp/signin.dart';
+import 'package:book/common/Common.dart';
+import 'package:book/layout/cart_test.dart';
 import 'package:book/layout/detail.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
+import 'package:supabase_auth_ui/supabase_auth_ui.dart';
 
 import '../Async/asyncwidget.dart';
 import '../Controller/book_controller.dart';
@@ -75,6 +80,7 @@ class _MenuState extends State<Menu> {
                       ),
                       itemCount: books.length,
                       itemBuilder: (context, index) {
+                        final currencyFormat = NumberFormat.currency(locale: 'vi_VN', symbol: 'đ');
                         final book = books[index];
                         return GestureDetector(
                           onTap: () {
@@ -123,7 +129,7 @@ class _MenuState extends State<Menu> {
                                 Padding(
                                   padding: const EdgeInsets.symmetric(horizontal: 8.0),
                                   child: Text(
-                                    "${book.gia}đ",
+                                    currencyFormat.format(book.gia),
                                     style: const TextStyle(fontSize: 14),
                                   ),
                                 ),
@@ -142,7 +148,17 @@ class _MenuState extends State<Menu> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // TODO: Xử lý mở giỏ hàng
+          AuthResponse? res = Common.response;
+          if (res == null) {
+            Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => LoginPage(),)
+            );
+            return;
+          }
+
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => PageGioHang(),)
+          );
         },
         child: const Icon(Icons.shopping_cart),
       ),
