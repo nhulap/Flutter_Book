@@ -28,15 +28,6 @@ class _PageGioHangState extends State<PageGioHang> {
   @override
   void initState() {
     super.initState();
-    // final userId = userController.userId.value;
-    //
-    // if (userId == 0) {
-    //   cartController.loadLocalCart();
-    //   cartController.update(['cart']);
-    //   _cartFuture = Future.value();
-    // } else {
-    //   _cartFuture = cartController.loadCartFromSupabase(userId);
-    // }
   }
 
 

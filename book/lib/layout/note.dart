@@ -1,5 +1,7 @@
 import 'package:book/Controller/cart_controller.dart';
 import 'package:book/Model/cart.dart';
+import 'package:book/common/Common.dart';
+import 'package:book/layout/completed.dart';
 import 'package:book/layout/pay.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -28,15 +30,25 @@ class Note extends StatelessWidget {
                 backgroundColor: MaterialStatePropertyAll(Colors.blue),
                 padding: MaterialStatePropertyAll(EdgeInsets.all(10))),
             onPressed: () async {
-              controller.name = nameController.text;
-              controller.phone = phoneController.text;
-              controller.address = addressController.text;
-              controller.note = noteController.text;
-              Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => PaymentConfirmation()),
-              );
-            },
+              final auth = Common.response;
+              if (auth != null) {
+                controller.name = nameController.text;
+                controller.phone = phoneController.text;
+                controller.address = addressController.text;
+                controller.note = noteController.text;
 
+                await controller.createOrder(auth);
+
+                // Nếu muốn chuyển trang sau khi tạo đơn hàng
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const Completed(),
+                  ),
+                );
+              } else {
+                Get.snackbar("Lỗi", "Vui lòng đăng nhập để đặt hàng");
+              }
+            },
 
             child: const Text(
               "Thanh toán",
@@ -66,87 +78,6 @@ class Note extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
-              padding:
-              const EdgeInsets.only(left: 40, right: 40, top: 10, bottom: 10),
-              child: Row(
-                children: [
-                  Container(
-                    width: 50,
-                    height: 50,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(width: 3, color: mainBlue),
-                    ),
-                    child: Text(
-                      "1",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 25,
-                        color: mainBlue,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-
-                  Expanded(
-                    child: SizedBox(
-                      height: 5,
-                      width: 100,
-                      child: ColoredBox(
-                        color: lightBlue,
-                      ),
-                    ),
-                  ),
-                  Container(
-                    width: 50,
-                    height: 50,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(width: 3, color: mainBlue),
-                    ),
-                    child: Text(
-                      "2",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 25,
-                        color: mainBlue,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: SizedBox(
-                      height: 5,
-                      width: 100,
-                      child: ColoredBox(
-                        color: lightBlue,
-                      ),
-                    ),
-                  ),
-                  Container(
-                    width: 50,
-                    height: 50,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(width: 3, color: mainBlue),
-                    ),
-                    child: Text(
-                      "3",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 25,
-                        color: mainBlue,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
             const Padding(
               padding: EdgeInsets.only(left: 20, right: 20),
               child: Row(
