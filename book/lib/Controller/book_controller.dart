@@ -1,8 +1,5 @@
-
-
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-
 import '../Model/book.dart';
 
 class Book_Controller extends GetxController{
@@ -18,7 +15,6 @@ class Book_Controller extends GetxController{
     return (response as List)
         .map((bookJson) => Book.fromJson(bookJson))
         .toList();
-
   }
 
   Future<List<Book>> searchBooks(String query) async {
@@ -27,7 +23,6 @@ class Book_Controller extends GetxController{
     if ((result as List).isEmpty) {
       return [];
     }
-
     final data = result as List;
     return data.map((e) => Book.fromJson(e)).toList();
   }

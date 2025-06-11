@@ -3,96 +3,65 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../model/user.dart';
 
 class UserController extends GetxController {
-  var userId = 0.obs;
-  var isLoggedIn = false.obs;
+  final SupabaseClient _client = Supabase.instance.client;
 
-  void setUser(int id) {
-    userId.value = id;
-    isLoggedIn.value = true;
+  var uuid = ''.obs; // UUID từ Supabase Auth
+  var userInfo = Rxn<ModelUser>(); // Dữ liệu người dùng
+
+  Future<void> fetchUserByUUID(String uid) async {
+    final res = await _client
+        .from("User")
+        .select()
+        .eq("uuid", uid)
+        .maybeSingle();
+
+    if (res != null) {
+      userInfo.value = ModelUser.fromJson(res);
+      uuid.value = uid;
+    } else {
+      // Có thể tự động tạo bản ghi nếu chưa có
+    }
   }
 
   void clearUser() {
-    userId.value = 0;
-    isLoggedIn.value = false;
+    uuid.value = '';
+    userInfo.value = null;
   }
 
-  final SupabaseClient _client = Supabase.instance.client;
+  Future<void> updateUserInfo({
+    required String tenKH,
+    required String email,
+    required String soDienThoai,
+    required String diaChi,
+    required String nickname,
+  }) async {
+    final user = userInfo.value;
+    if (user == null) return;
 
-  Future<Map<String, dynamic>> getUserWithOrders(int userId) async {
     try {
-      final userData = await _client
-          .from('User')
-          .select('*')
-          .eq('id', userId)
-          .maybeSingle();
-
-      if (userData == null) {
-        return {
-          'User': null,
-          'Orders': [],
-        };
-      }
-
-      final ordersData = await _client
-          .from('Orders')
-          .select('id, ngayTao, tinhTien, diaChi, '
-          'Order_items(id, soLuongitem, giaBan, trangThai, '
-          'Book(id, tenSach, tacGia, nhaXB, gia, anh, moTa))')
-          .eq('user_id', userId);
-
-      return {
-        'User': ModelUser.fromJson(userData),
-        'Orders': ordersData,
-      };
-    } catch (e) {
-      throw Exception('Không thể tải thông tin người dùng: $e');
-    }
-  }
-
-  Future<List<Map<String, dynamic>>> getOrderDetails(int orderId) async {
-    try {
-      final orderDetails = await _client
-          .from('Order_items')
-          .select(
-          'id, soLuongitem, giaBan, trangThai, book(id, tenSach, author, publisher, gia, anh, moTa)')
-          .eq('order_id', orderId) as List<dynamic>?;
-
-      return orderDetails?.map((e) => e as Map<String, dynamic>).toList() ?? [];
-    } catch (e) {
-      throw Exception('Không thể tải chi tiết đơn hàng: $e');
-    }
-  }
-
-  //quang ly trang thai
-  Future<void> updateState(int orderItemId, String newState) async {
-    try {
-      await _client
-          .from('Order_items')
-          .update({'trangThai': newState})
-          .eq('id', orderItemId);
-    } catch (e) {
-      throw Exception('Không thể cập nhật trạng thái: $e');
-    }
-  }
-
-  //chinh sua trang profile
-  Future<void> updateUser(ModelUser user) async {
-    try {
-      await _client
-          .from('User')
+      await Supabase.instance.client
+          .from("User")
           .update({
-        'tenKH': user.tenKH,
-        'soDienThoai': user.soDienThoai,
-        'diaChi': user.diaChi,
-        'email': user.email,
-        'nickname': user.nickname,
-        // Nếu bạn có password, hoặc các trường khác thì thêm vào đây
+        "tenKH": tenKH,
+        "email": email,
+        "soDienThoai": soDienThoai,
+        "diaChi": diaChi,
+        "nickname": nickname,
       })
-          .eq('id', user.id);
+          .eq("uuid", user.uuid);
+
+      // Cập nhật local
+      userInfo.value = user.copyWith(
+        tenKH: tenKH,
+        email: email,
+        soDienThoai: soDienThoai,
+        diaChi: diaChi,
+        nickname: nickname,
+      );
+      Get.snackbar("Thành công", "Đã cập nhật thông tin");
     } catch (e) {
-      throw Exception('Không thể cập nhật thông tin người dùng: $e');
+      Get.snackbar("Lỗi", "Không thể cập nhật: $e");
     }
   }
-
 
 }

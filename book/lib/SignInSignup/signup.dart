@@ -1,7 +1,10 @@
-import 'package:book/PageHome/pagehome.dart';
+import 'package:book/PageHome/Pagehome.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:supabase_auth_ui/supabase_auth_ui.dart';
+import '../Async/asyncwidget.dart';
+import '../layout/profile.dart';
 
 class Signup extends StatefulWidget {
   const Signup({super.key});
@@ -11,86 +14,35 @@ class Signup extends StatefulWidget {
 }
 
 class _SignupState extends State<Signup> {
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
-  bool _loading = false;
-  String? _error;
-
-  Future<void> _signUp() async {
-    setState(() {
-      _loading = true;
-      _error = null;
-    });
-
-    try {
-      final supabase = Supabase.instance.client;
-      final response = await supabase.auth.signUp(
-        email: _emailController.text.trim(),
-        password: _passwordController.text.trim(),
-      );
-
-      if (response.user != null) {
-        Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (context) => PageHome(),)
-        );
-      }
-    } catch (e) {
-      setState(() {
-        _error = 'Đăng ký thất bại. Vui lòng thử lại.';
-      });
-    } finally {
-      setState(() {
-        _loading = false;
-      });
-    }
-  }
-
-  @override
-  void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
-    super.dispose();
-  }
+  final TextEditingController _nameController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Trang Đăng Ký"),
-      ),
+      appBar: AppBar(title: const Text("Sign up")),
       body: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const Text("Email"),
-            TextField(
-              controller: _emailController,
-              decoration: const InputDecoration(
-                hintText: 'Nhập email',
-              ),
-              keyboardType: TextInputType.emailAddress,
-            ),
-            const SizedBox(height: 16),
-            const Text("Mật khẩu"),
-            TextField(
-              controller: _passwordController,
-              decoration: const InputDecoration(
-                hintText: 'Nhập mật khẩu',
-              ),
-              obscureText: true,
-            ),
             const SizedBox(height: 20),
-            if (_error != null)
-              Text(
-                _error!,
-                style: const TextStyle(color: Colors.red),
+            Expanded(
+              child: SupaEmailAuth(
+                showConfirmPasswordField: true,
+                onSignInComplete: (_) => Navigator.pop(context),
+                onSignUpComplete: (res) {
+                  if (res.user != null) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => PageVerifyOTP(
+                          email: res.user!.email!,
+                          name: _nameController.text.trim(),
+                        ),
+                      ),
+                    );
+                  }
+                },
               ),
-            ElevatedButton(
-              onPressed: _loading ? null : _signUp,
-              child: _loading
-                  ? const CircularProgressIndicator()
-                  : const Text("Đăng ký"),
             ),
           ],
         ),
@@ -98,4 +50,75 @@ class _SignupState extends State<Signup> {
     );
   }
 }
-// phan biet
+
+class PageVerifyOTP extends StatelessWidget {
+  final String email;
+  final String name;
+
+  const PageVerifyOTP({super.key, required this.email, required this.name});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text("Xác thực OTP")),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          OtpTextField(
+            numberOfFields: 6,
+            borderColor: const Color(0xFF512DA8),
+            showFieldAsBox: true,
+            onSubmit: (code) async {
+              try {
+                final res = await Supabase.instance.client.auth.verifyOTP(
+                  email: email,
+                  token: code,
+                  type: OtpType.email,
+                );
+
+                final user = res.user;
+                if (user != null) {
+                  // Lưu user vào bảng User (với tên không null)
+                  await Supabase.instance.client.from('User').upsert({
+                    'uuid': user.id,
+                    'email': user.email,
+                    'tenKH': 'Chưa đặt tên',
+                    'soDienThoai': '',
+                    'diaChi': '',
+                    'password': '',
+                    'nickname': '',
+                  });
+
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (_) => const PageHome()),
+                  );
+                } else {
+                  _showError(context, "Không xác thực được. Vui lòng kiểm tra mã OTP.");
+                }
+              } catch (e) {
+                _showError(context, "Xác thực thất bại: $e");
+              }
+            },
+          ),
+          const SizedBox(height: 10),
+          ElevatedButton(
+            onPressed: () async {
+              showSnackBar(context, message: "Đang gửi OTP...", seconds: 600);
+              await Supabase.instance.client.auth.signInWithOtp(email: email);
+              showSnackBar(context, message: "Mã OTP đã gửi lại tới $email", seconds: 3);
+            },
+            child: const Text("Gửi lại OTP"),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showError(BuildContext context, String message) {
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(title: const Text("Lỗi"), content: Text(message)),
+    );
+  }
+}

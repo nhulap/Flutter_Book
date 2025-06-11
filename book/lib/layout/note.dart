@@ -2,7 +2,7 @@ import 'package:book/Controller/cart_controller.dart';
 import 'package:book/Model/cart.dart';
 import 'package:book/common/Common.dart';
 import 'package:book/layout/completed.dart';
-import 'package:book/layout/pay.dart';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -51,7 +51,7 @@ class Note extends StatelessWidget {
             },
 
             child: const Text(
-              "Thanh toán",
+              "Đặt hàng",
               style: TextStyle(color: Colors.white, fontSize: 25),
             )),
       ),
@@ -80,14 +80,14 @@ class Note extends StatelessWidget {
           children: [
             const Padding(
               padding: EdgeInsets.only(left: 20, right: 20),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text("Giao hàng", style: TextStyle(fontSize: 20)),
-                  Text("Thanh toán", style: TextStyle(fontSize: 20)),
-                  Text("Kiểm tra", style: TextStyle(fontSize: 20)),
-                ],
-              ),
+              // child: Row(
+              //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //   // children: [
+              //   //   Text("Giao hàng", style: TextStyle(fontSize: 20)),
+              //   //   Text("Thanh toán", style: TextStyle(fontSize: 20)),
+              //   //   Text("Kiểm tra", style: TextStyle(fontSize: 20)),
+              //   // ],
+              // ),
             ),
             const SizedBox(height: 20),
             const Text(

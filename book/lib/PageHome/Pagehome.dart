@@ -1,7 +1,6 @@
 import 'package:book/Controller/cart_controller.dart';
 import 'package:book/Controller/user_controller.dart';
 import 'package:book/common/Common.dart';
-import 'package:book/layout/cart.dart';
 import 'package:book/layout/cart_test.dart';
 import 'package:book/layout/detail.dart';
 import 'package:book/SignInSignUp/signin.dart';
@@ -73,8 +72,10 @@ class _PageHomeState extends State<PageHome> {
                       ),
                     ),
                     onPressed: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => const Signup()));
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => Signup()),
+                      );
                     },
                     child: const Text('Sign Up'),
                   ),
@@ -90,7 +91,7 @@ class _PageHomeState extends State<PageHome> {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => Profile()),
+                        MaterialPageRoute(builder: (context) => ProfilePage()),
                       );
                     },
                   ),
@@ -118,11 +119,7 @@ class _PageHomeState extends State<PageHome> {
                   ),
                 ],
               )
-
-
         ],
-
-
       ),
       body: SingleChildScrollView(
         child: Column(

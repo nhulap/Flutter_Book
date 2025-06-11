@@ -1,8 +1,6 @@
 import 'package:book/Controller/cart_controller.dart';
 import 'package:book/Controller/user_controller.dart';
 import 'package:book/Model/cart.dart';
-import 'package:book/PageHome/pagehome.dart';
-import 'package:book/SignInSignUp/signin.dart';
 import 'package:book/common/Common.dart';
 import 'package:book/layout/note.dart';
 import 'package:flutter/material.dart';
@@ -19,11 +17,9 @@ class PageGioHang extends StatefulWidget {
 }
 
 class _PageGioHangState extends State<PageGioHang> {
-  // final cartController = Get.find<CartController>();
   final cartController = Get.put(CartController());
   final userController = Get.find<UserController>();
 
-  Future<void>? _cartFuture;
 
   @override
   void initState() {
@@ -139,10 +135,6 @@ class _PageGioHangState extends State<PageGioHang> {
                                 // Hình ảnh + Checkbox
                                 Column(
                                   children: [
-                                    // Checkbox(
-                                    //   value: item.selected,
-                                    //   onChanged: (_) => controller1.selectedHandle(index),
-                                    // ),
                                     const SizedBox(height: 5),
                                     ClipRRect(
                                       borderRadius: BorderRadius.circular(8),
